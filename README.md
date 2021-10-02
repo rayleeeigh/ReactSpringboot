@@ -16,4 +16,4 @@ This project is for practice and activity submission to Fullspeed Technologies I
 #### $ npm install<br>
 #### $ npm run start<br><br>
 
-Comments and critiques are welcome. We are aiming to be better each day.
+Comments and critiques are welcome. We are aiming to be better each day. 
