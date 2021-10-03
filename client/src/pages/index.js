@@ -30,9 +30,15 @@ export default function Index() {
   const [updateCourse, setUpdateCourse] = useState("");
   const [updateYear, setUpdateYear] = useState(0);
   const [updateEmail, setUpdateEmail] = useState("");
-  const [ID, setID] = useState("");
   const [students, setStudents] = useState([]);
   const toast = useToast();
+  const [estuds, setEStuds] = useState({
+    id: "",
+    name: "",
+    course: "",
+    year: "",
+    email: "",
+  });
 
   const addStudent = (e) => {
     e.preventDefault();
@@ -69,38 +75,47 @@ export default function Index() {
     });
   };
 
-  const editStudent = (id) => {
-    setID(id);
+  const updateStudent = (id) => {
+    // alert(Ename + " " + id);
+    const student = {
+      name,
+      email,
+      course,
+      year,
+    };
+    student.name = updateName;
+    student.email = updateEmail;
+    student.course = updateCourse;
+    student.year = updateYear;
+
+    axios
+      .put("http://localhost:8080/student/update/" + id, student)
+      .then(() => {
+        console.log(student);
+        toast({
+          title: "Student Update",
+          description: "Student Updated successfully",
+          position: "top",
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+        onClose();
+      });
+  };
+
+  const editStudent = (student) => {
+    setEStuds(student);
     onEditOpen();
   };
-
-  const updateStudent = (id) => {
-    const studentupdate = {
-      name: updateName,
-      email: updateEmail,
-      course: updateCourse,
-      year: updateYear,
-    };
-    axios.post("http://localhost:8080/student/update/" + id, studentupdate).then(() => {
-      toast({
-        title: "Student Update",
-        description: "Student Updated Successfully!",
-        position: "top",
-        status: "success",
-        duration: "5000",
-        isClosable: "false",
-      });
-      onClose();
-    });
-  };
-
 
   useEffect(() => {
     axios.get("http://localhost:8080/student/view").then((response) => {
       setStudents(response.data);
     });
-  },[]);
+  }, []);
 
+  // }
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const {
@@ -116,84 +131,84 @@ export default function Index() {
   } = useDisclosure();
   return (
     <Box bg="gray.500" h="100vh" w="100%">
-    <Modal isOpen={isEditOpen} onClose={onEditClose}>
-    <ModalContent>
-      <ModalHeader>Edit Student</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-      <Stack
-        spacing={3}
-        w={"full"}
-        maxW={"md"}
-        bg="gray.300"
-        rounded={"xl"}
-        boxShadow={"lg"}
-        p={6}
-        my={10}
-      >
-        <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
-          Edit student
-        </Heading>
-        <Text fontSize={{ base: "sm", sm: "md" }}>Name</Text>
-        <FormControl>
-          <Input
-            placeholder="Name"
-            type="text"
-            value={updateName}
-            onChange={(e) => setUpdateName(e.target.value)}
-          />
-        </FormControl>
-        <Text fontSize={{ base: "sm", sm: "md" }}>Course</Text>
-        <FormControl>
-          <Input
-            placeholder="Course"
-            type="text"
-            value={updateCourse}
-            onChange={(e) => setUpdateCourse(e.target.value)}
-          />
-        </FormControl>
-        <Text fontSize={{ base: "sm", sm: "md" }}>Year</Text>
-        <FormControl>
-          <Input
-            placeholder="Year"
-            type="text"
-            value={updateYear}
-            onChange={(e) => setUpdateYear(e.target.value)}
-          />
-        </FormControl>
-        <Text fontSize={{ base: "sm", sm: "md" }}>Email Address</Text>
-        <FormControl id="email">
-          <Input
-            placeholder="Email address"
-            type="email"
-            value={updateEmail}
-            onChange={(e) => setUpdateEmail(e.target.value)}
-          />
-        </FormControl>
-      </Stack>
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          bg={"gray.200"}
-          color={"black"}
-          shadow="2xl"
-          _hover={{
-            bg: "blue.500",
-          }}
-          onClick={()=>{updateStudent(ID)}}
-        >
-          Update student
-        </Button>
-        <Button colorScheme="blue" mr={3} onClick={onEditClose}>
-          Close
-        </Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
+      <Modal isOpen={isEditOpen} onClose={onEditClose}>
+        <ModalContent>
+          <ModalHeader>Edit Student</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Stack
+              spacing={3}
+              w={"full"}
+              maxW={"md"}
+              bg="gray.300"
+              rounded={"xl"}
+              boxShadow={"lg"}
+              p={6}
+              my={10}
+            >
+              <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
+                Edit student
+              </Heading>
+              <Text fontSize={{ base: "sm", sm: "md" }}>Name</Text>
+              <FormControl>
+                <Input
+                  placeholder={estuds.name}
+                  type="text"
+                  value={updateName}
+                  onChange={(e) => setUpdateName(e.target.value)}
+                />
+              </FormControl>
+              <Text fontSize={{ base: "sm", sm: "md" }}>Course</Text>
+              <FormControl>
+                <Input
+                  placeholder={estuds.course}
+                  type="text"
+                  value={updateCourse}
+                  onChange={(e) => setUpdateCourse(e.target.value)}
+                />
+              </FormControl>
+              <Text fontSize={{ base: "sm", sm: "md" }}>Year</Text>
+              <FormControl>
+                <Input
+                  placeholder={estuds.year}
+                  type="text"
+                  value={updateYear}
+                  onChange={(e) => setUpdateYear(e.target.value)}
+                />
+              </FormControl>
+              <Text fontSize={{ base: "sm", sm: "md" }}>Email Address</Text>
+              <FormControl id="email">
+                <Input
+                  placeholder={estuds.name}
+                  type="email"
+                  value={updateEmail}
+                  onChange={(e) => setUpdateEmail(e.target.value)}
+                />
+              </FormControl>
+            </Stack>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              bg={"gray.200"}
+              color={"black"}
+              shadow="2xl"
+              _hover={{
+                bg: "blue.500",
+              }}
+              onClick={() => {
+                updateStudent(estuds.id);
+              }}
+            >
+              Update student
+            </Button>
+            <Button colorScheme="blue" mr={3} onClick={onEditClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
-      <Button onClick={onOpen}>
-        Add Students
-      </Button>
+      <Button onClick={onOpen}>Add Students</Button>
 
       <Button onClick={onViewOpen}>List of Students</Button>
 
@@ -352,8 +367,8 @@ export default function Index() {
                   _focus={{
                     bg: "gray.200",
                   }}
-                  onClick={()=>{
-                    editStudent(student.id)
+                  onClick={() => {
+                    editStudent(student);
                   }}
                 >
                   Edit Info
