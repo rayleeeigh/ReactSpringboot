@@ -3,14 +3,13 @@ package com.example.server.controller;
 import com.example.server.model.Student;
 import com.example.server.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
-
+@CrossOrigin
 public class StudentController {
     @Autowired
     private StudentService studentService;
@@ -19,5 +18,15 @@ public class StudentController {
     public void addStudent(@RequestBody Student student){
         studentService.saveStudent(student);
         System.out.println("Successfully Added New Student");
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteStudent(@PathVariable Integer id){
+        studentService.removeStudent(id);
+    }
+
+    @GetMapping("/view")
+    public List<Student> getAllStudents(){
+        return studentService.getAllStudents();
     }
 }
