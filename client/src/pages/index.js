@@ -22,11 +22,22 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 export default function Index() {
   const [name, setName] = useState("");
+
   const [course, setCourse] = useState("");
   const [year, setYear] = useState(0);
   const [email, setEmail] = useState("");
   const [students, setStudents] = useState([]);
+  const [Ename, setEName] = useState("");
+  const [Ecourse, EsetCourse] = useState("");
+  const [Eyear, EsetYear] = useState(0);
+  const [Eemail, EsetEmail] = useState("");
   const toast = useToast();
+  const [estuds, setEStuds] = useState({
+    name: "",
+    course: "",
+    year: "",
+    email: "",
+  });
 
   const addStudent = (e) => {
     e.preventDefault();
@@ -48,11 +59,13 @@ export default function Index() {
       onClose();
     });
   };
+
   useEffect(() => {
     axios.get("http://localhost:8080/student/view").then((response) => {
       setStudents(response.data);
     });
-  });
+  }, []);
+
   const deleteStudent = (id) => {
     axios.delete("http://localhost:8080/student/delete/" + id).then(() => {
       toast({
@@ -67,26 +80,38 @@ export default function Index() {
     });
   };
 
-  const updateStudent = (e, id) => {
-    axios.post("http://localhost:8080/student/update/" + id).then(() => {
-      toast({
-        title: "Student Update",
-        description: "Student Updated successfully",
-        position: "top",
-        status: "success",
-        duration: 5000,
-        isClosable: false,
+  const updateStudent = (id) => {
+    // alert(Ename + " " + id);
+    const student = {
+      name,
+      email,
+      course,
+      year,
+    };
+    student.name = Ename;
+    student.email = Eemail;
+    student.course = Ecourse;
+    student.year = Eyear;
+
+    axios
+      .put("http://localhost:8080/student/update/" + id, student)
+      .then(() => {
+        console.log(student);
+        toast({
+          title: "Student Update",
+          description: "Student Updated successfully",
+          position: "top",
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+        onClose();
       });
-      onClose();
-    });
   };
 
-  useEffect(() => {
-    axios.get("http://localhost:8080/student/view").then((response) => {
-      setStudents(response.data);
-    });
-  });
+  // const openEditModal = (student) => {
 
+  // }
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const {
@@ -94,6 +119,14 @@ export default function Index() {
     onOpen: onEditOpen,
     onClose: onEditClose,
   } = useDisclosure();
+
+  const handleChange = (event) => {
+    setEStuds({
+      ...estuds,
+      [event.target.name]: event.target.value,
+    });
+  };
+
   return (
     <Box bg="gray.300" h="100vh" w="100%">
       <Button position="absolute" onClick={onOpen}>
@@ -238,6 +271,7 @@ export default function Index() {
                   _focus={{
                     bg: "gray.200",
                   }}
+                  onClick={onEditOpen}
                 >
                   Edit Info
                 </Button>
@@ -262,6 +296,86 @@ export default function Index() {
                 >
                   Delete
                 </Button>
+                <Modal isOpen={isEditOpen} onClose={onEditClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Edit Student</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Stack
+                        spacing={4}
+                        w={"full"}
+                        maxW={"md"}
+                        bg="gray.300"
+                        rounded={"xl"}
+                        boxShadow={"lg"}
+                        p={6}
+                        my={12}
+                      >
+                        <Heading
+                          lineHeight={1.1}
+                          fontSize={{ base: "2xl", md: "3xl" }}
+                        >
+                          Edit student Information
+                        </Heading>
+                        <Text fontSize={{ base: "sm", sm: "md" }}>Name</Text>
+                        <Input
+                          placeholder={student.name}
+                          type="text"
+                          value={Ename}
+                          onChange={(e) => setEName(e.target.value)}
+                        />
+                        <Text fontSize={{ base: "sm", sm: "md" }}>Course</Text>
+                        <FormControl>
+                          <Input
+                            placeholder={student.course}
+                            type="text"
+                            value={Ecourse}
+                            onChange={(e) => EsetCourse(e.target.value)}
+                          />
+                        </FormControl>
+                        <Text fontSize={{ base: "sm", sm: "md" }}>Year</Text>
+                        <FormControl>
+                          <Input
+                            placeholder={student.year}
+                            type="text"
+                            value={Eyear}
+                            onChange={(e) => EsetYear(e.target.value)}
+                          />
+                        </FormControl>
+                        <Text fontSize={{ base: "sm", sm: "md" }}>
+                          Email Address
+                        </Text>
+                        <FormControl id="email">
+                          <Input
+                            placeholder={student.email}
+                            type="email"
+                            value={Eemail}
+                            onChange={(e) => EsetEmail(e.target.value)}
+                          />
+                        </FormControl>
+                      </Stack>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={onEditClose}>
+                        Close
+                      </Button>
+                      <Button
+                        bg={"blue.400"}
+                        color={"white"}
+                        _hover={{
+                          bg: "blue.500",
+                        }}
+                        onClick={() => {
+                          updateStudent(student.id);
+                        }}
+                      >
+                        Update student
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               </Stack>
             </Box>
           ))}
