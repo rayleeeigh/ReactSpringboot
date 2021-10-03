@@ -20,11 +20,17 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 export default function Index() {
   const [name, setName] = useState("");
   const [course, setCourse] = useState("");
   const [year, setYear] = useState(0);
   const [email, setEmail] = useState("");
+  const [updateName, setUpdateName] = useState("");
+  const [updateCourse, setUpdateCourse] = useState("");
+  const [updateYear, setUpdateYear] = useState(0);
+  const [updateEmail, setUpdateEmail] = useState("");
+  const [ID, setID] = useState("");
   const [students, setStudents] = useState([]);
   const toast = useToast();
 
@@ -48,11 +54,7 @@ export default function Index() {
       onClose();
     });
   };
-  useEffect(() => {
-    axios.get("http://localhost:8080/student/view").then((response) => {
-      setStudents(response.data);
-    });
-  });
+
   const deleteStudent = (id) => {
     axios.delete("http://localhost:8080/student/delete/" + id).then(() => {
       toast({
@@ -67,25 +69,37 @@ export default function Index() {
     });
   };
 
-  const updateStudent = (e, id) => {
-    axios.post("http://localhost:8080/student/update/" + id).then(() => {
+  const editStudent = (id) => {
+    setID(id);
+    onEditOpen();
+  };
+
+  const updateStudent = (id) => {
+    const studentupdate = {
+      name: updateName,
+      email: updateEmail,
+      course: updateCourse,
+      year: updateYear,
+    };
+    axios.post("http://localhost:8080/student/update/" + id, studentupdate).then(() => {
       toast({
         title: "Student Update",
-        description: "Student Updated successfully",
+        description: "Student Updated Successfully!",
         position: "top",
         status: "success",
-        duration: 5000,
-        isClosable: false,
+        duration: "5000",
+        isClosable: "false",
       });
       onClose();
     });
   };
 
+
   useEffect(() => {
     axios.get("http://localhost:8080/student/view").then((response) => {
       setStudents(response.data);
     });
-  });
+  },[]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -94,15 +108,114 @@ export default function Index() {
     onOpen: onEditOpen,
     onClose: onEditClose,
   } = useDisclosure();
+
+  const {
+    isOpen: isViewOpen,
+    onOpen: onViewOpen,
+    onClose: onViewClose,
+  } = useDisclosure();
   return (
-    <Box bg="gray.300" h="100vh" w="100%">
-      <Button position="absolute" onClick={onOpen}>
-        Add Student
+    <Box bg="gray.500" h="100vh" w="100%">
+    <Modal isOpen={isEditOpen} onClose={onEditClose}>
+    <ModalContent>
+      <ModalHeader>Edit Student</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+      <Stack
+        spacing={3}
+        w={"full"}
+        maxW={"md"}
+        bg="gray.300"
+        rounded={"xl"}
+        boxShadow={"lg"}
+        p={6}
+        my={10}
+      >
+        <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
+          Edit student
+        </Heading>
+        <Text fontSize={{ base: "sm", sm: "md" }}>Name</Text>
+        <FormControl>
+          <Input
+            placeholder="Name"
+            type="text"
+            value={updateName}
+            onChange={(e) => setUpdateName(e.target.value)}
+          />
+        </FormControl>
+        <Text fontSize={{ base: "sm", sm: "md" }}>Course</Text>
+        <FormControl>
+          <Input
+            placeholder="Course"
+            type="text"
+            value={updateCourse}
+            onChange={(e) => setUpdateCourse(e.target.value)}
+          />
+        </FormControl>
+        <Text fontSize={{ base: "sm", sm: "md" }}>Year</Text>
+        <FormControl>
+          <Input
+            placeholder="Year"
+            type="text"
+            value={updateYear}
+            onChange={(e) => setUpdateYear(e.target.value)}
+          />
+        </FormControl>
+        <Text fontSize={{ base: "sm", sm: "md" }}>Email Address</Text>
+        <FormControl id="email">
+          <Input
+            placeholder="Email address"
+            type="email"
+            value={updateEmail}
+            onChange={(e) => setUpdateEmail(e.target.value)}
+          />
+        </FormControl>
+      </Stack>
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          bg={"gray.200"}
+          color={"black"}
+          shadow="2xl"
+          _hover={{
+            bg: "blue.500",
+          }}
+          onClick={()=>{updateStudent(ID)}}
+        >
+          Update student
+        </Button>
+        <Button colorScheme="blue" mr={3} onClick={onEditClose}>
+          Close
+        </Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
+
+      <Button onClick={onOpen}>
+        Add Students
       </Button>
 
-      <Button position="absolute" onClick={onOpen}>
-        Add Student
-      </Button>
+      <Button onClick={onViewOpen}>List of Students</Button>
+
+      <Modal isOpen={isViewOpen} onClose={onViewClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>List of Students</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <ol>
+              {students.map((student) => (
+                <li key={student.id}>{student.name}</li>
+              ))}
+            </ol>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onViewClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -202,6 +315,7 @@ export default function Index() {
               p={6}
               textAlign={"center"}
               display="inline-block"
+              key={student.id}
             >
               <Avatar
                 size={"xl"}
@@ -238,9 +352,13 @@ export default function Index() {
                   _focus={{
                     bg: "gray.200",
                   }}
+                  onClick={()=>{
+                    editStudent(student.id)
+                  }}
                 >
                   Edit Info
                 </Button>
+
                 <Button
                   flex={1}
                   fontSize={"sm"}
