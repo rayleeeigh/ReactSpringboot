@@ -9,5 +9,5 @@ public interface StudentService {
     public Student saveStudent(Student student);
     public List<Student> getAllStudents();
     public void removeStudent(Integer id);
-    public void updateStudent(Integer id,Student student);
+    public Student updateStudent(Integer id,Student student);
 }

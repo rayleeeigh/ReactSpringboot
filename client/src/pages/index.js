@@ -30,20 +30,29 @@ export default function Index() {
 
   const addStudent = (e) => {
     e.preventDefault();
-    const student = { name, course, year, email };
+    const student = {
+      name,
+      email,
+      course,
+      year,
+    };
     axios.post("http://localhost:8080/student/add", student).then(() => {
       toast({
         title: "Student Add",
-        description: "Student added successfully",
+        description: "Added Student Successfully!",
         position: "top",
         status: "success",
-        duration: 5000,
-        isClosable: false,
+        duration: "5000",
+        isClosable: "false",
       });
       onClose();
     });
   };
-
+  useEffect(() => {
+    axios.get("http://localhost:8080/student/view").then((response) => {
+      setStudents(response.data);
+    });
+  });
   const deleteStudent = (id) => {
     axios.delete("http://localhost:8080/student/delete/" + id).then(() => {
       toast({
@@ -80,8 +89,17 @@ export default function Index() {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
+  } = useDisclosure();
   return (
     <Box bg="gray.300" h="100vh" w="100%">
+      <Button position="absolute" onClick={onOpen}>
+        Add Student
+      </Button>
+
       <Button position="absolute" onClick={onOpen}>
         Add Student
       </Button>
@@ -93,16 +111,16 @@ export default function Index() {
           <ModalCloseButton />
           <ModalBody>
             <Stack
-              spacing={4}
+              spacing={3}
               w={"full"}
               maxW={"md"}
               bg="gray.300"
               rounded={"xl"}
               boxShadow={"lg"}
               p={6}
-              my={12}
+              my={10}
             >
-              <Heading lineHeight={1.1} fontSize={{ base: "2xl", md: "3xl" }}>
+              <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
                 Add student
               </Heading>
               <Text fontSize={{ base: "sm", sm: "md" }}>Name</Text>
@@ -149,7 +167,7 @@ export default function Index() {
               Close
             </Button>
             <Button
-              bg={"blue.400"}
+              bg={"green.400"}
               color={"white"}
               _hover={{
                 bg: "blue.500",

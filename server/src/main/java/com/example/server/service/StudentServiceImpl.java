@@ -28,9 +28,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void updateStudent(Integer id,Student student){
-        if(studentRepository.findById(id).isPresent()==true){
-            studentRepository.save(student);
-        }
+    public Student updateStudent(Integer id,Student student){
+        System.out.println(student);
+        Student oldStud = studentRepository.findById(id).orElse(student);
+        oldStud.setName(student.getName());
+        oldStud.setEmail(student.getEmail());
+        oldStud.setCourse(student.getCourse());
+        oldStud.setYear(student.getYear());
+        studentRepository.save(oldStud);
+        return oldStud;
     }
 }
