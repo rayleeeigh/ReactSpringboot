@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/student")
-
+@CrossOrigin
 public class StudentController {
     @Autowired
     private StudentService studentService;
@@ -19,7 +19,13 @@ public class StudentController {
         studentService.saveStudent(student);
         System.out.println("Successfully Added New Student");
     }
-    @GetMapping("/getAll")
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteStudent(@PathVariable Integer id){
+        studentService.removeStudent(id);
+    }
+
+    @GetMapping("/view")
     public List<Student> getAllStudents(){
         return studentService.getAllStudents();
     }
