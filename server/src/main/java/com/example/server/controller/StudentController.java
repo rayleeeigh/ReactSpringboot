@@ -1,9 +1,9 @@
 package com.example.server.controller;
-
-import com.example.server.model.Student;
-import com.example.server.service.StudentService;
+import com.example.server.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.example.server.service.StudentService;
+
 
 import java.util.List;
 
@@ -29,4 +29,7 @@ public class StudentController {
     public List<Student> getAllStudents(){
         return studentService.getAllStudents();
     }
+
+    @PutMapping("/update/{id}")
+    public void update(@PathVariable Integer id, @RequestBody Student student){studentService.updateStudent(id,student);}
 }
