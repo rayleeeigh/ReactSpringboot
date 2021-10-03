@@ -29,22 +29,6 @@ export default function Index() {
   const [students,setStudents]=useState([]);
   const toast = useToast();
 
-  const addStudent=(e)=>{
-    e.preventDefault()
-    const student={name,course,year,email}
-    axios.post('http://localhost:8080/student/add',student)
-    .then(()=>{
-      toast({
-        title: "Student Add",
-        description: "Student added successfully",
-        position: "top",
-        status: "success",
-        duration: 5000,
-        isClosable: false,
-      });
-      onClose();
-    })
-  }
 
   const deleteStudent=(id)=>{
     axios.delete('http://localhost:8080/student/delete/'+id)
@@ -61,12 +45,6 @@ export default function Index() {
     })
   }
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/student/view')
-    .then(response => {
-      setStudents(response.data);
-    })
-  })
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
