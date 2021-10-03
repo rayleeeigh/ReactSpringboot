@@ -59,7 +59,7 @@ export default function Index() {
   };
 
   const updateStudent = (e, id) => {
-    axios.post("http://localhost:8080/student/delete/" + id).then(() => {
+    axios.post("http://localhost:8080/student/update/" + id).then(() => {
       toast({
         title: "Student Update",
         description: "Student Updated successfully",
