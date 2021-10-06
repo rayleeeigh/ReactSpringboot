@@ -13,7 +13,7 @@ class StudentRepositoryTest {
 
     //JUnit testing for  saveStudent
     @Test
-    public void saveStudentTest(){
+    void saveStudentTest(){
         System.out.println("HI");
         Student student = Student.builder()
                 .name("Andrew")
@@ -21,7 +21,7 @@ class StudentRepositoryTest {
                 .course("BSCS")
                 .year(4)
                 .build();
-        studentRepository.save(student);
+//        studentRepository.save(student);
 
         //validate whether the student was added or not
         //Assertions.assertThat(student.getId()).isGreaterThan(0);
