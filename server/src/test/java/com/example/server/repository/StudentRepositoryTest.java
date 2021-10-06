@@ -14,7 +14,7 @@ class StudentRepositoryTest {
     //JUnit testing for  saveStudent
     @Test
     public void saveStudentTest(){
-        System.out.println("HI");
+
         Student student = Student.builder()
                 .name("Andrew")
                 .email("andrew@email.com")
