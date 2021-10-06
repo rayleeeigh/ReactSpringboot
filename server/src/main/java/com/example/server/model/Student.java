@@ -1,10 +1,12 @@
 package com.example.server.model;
 
+import lombok.Builder;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+@Builder
 @Entity
 public class Student {
     @Id
@@ -54,4 +56,6 @@ public class Student {
     public void setYear(int year) {
         this.year = year;
     }
+
+
 }
