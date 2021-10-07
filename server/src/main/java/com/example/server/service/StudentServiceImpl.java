@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-@Service
+@Service //specifies the  intent that the annotated class is a business class.
 public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentRepository studentRepository;
@@ -15,6 +16,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student saveStudent(Student student) {
         return studentRepository.save(student);
+    }
+
+    @Override
+    public Optional<Student> findById(Integer id){
+        return studentRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Student> findByEmail(String email){
+        return studentRepository.findByEmail(email);
     }
 
     @Override
@@ -31,7 +42,8 @@ public class StudentServiceImpl implements StudentService {
     public Student updateStudent(Integer id,Student student){
         System.out.println(student);
         Student oldStud = studentRepository.findById(id).orElse(student);
-        oldStud.setName(student.getName());
+        oldStud.setFirstName(student.getFirstName());
+        oldStud.setLastName(student.getLastName());
         oldStud.setEmail(student.getEmail());
         oldStud.setCourse(student.getCourse());
         oldStud.setYear(student.getYear());
