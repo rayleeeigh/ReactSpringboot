@@ -2,6 +2,8 @@ package com.example.server.controller;
 import com.example.server.exception.StudentNotFoundException;
 import com.example.server.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.server.service.StudentService;
 
@@ -18,7 +20,6 @@ public class StudentController {
     @PostMapping("/add")
     public void addStudent(@RequestBody Student student){ //@RequestBody binds the HTTP request body to the handler method paramater "student"
         studentService.saveStudent(student);
-        System.out.println("Successfully Added New Student");
     }
 
     @GetMapping("/view/{id}")
@@ -26,8 +27,6 @@ public class StudentController {
         Student student = studentService.findById(id).orElseThrow(()->new StudentNotFoundException("Student with "+id+" is not found!"));
         return student;
     }
-
-
 
     @DeleteMapping("/delete/{id}")
     public void deleteStudent(@PathVariable Integer id){
@@ -42,4 +41,9 @@ public class StudentController {
     @PutMapping("/update/{id}")//or @RequestMapping(method = RequestMethod.PUT) used for mapping our HTTP request "update/{id}" onto updateStudent() handler method.
     public void update(@PathVariable Integer id, @RequestBody Student student){studentService.updateStudent(id,student);}
 
+    @GetMapping("/viewStudent/{name}")
+    public List<Student> viewStudents(@RequestParam String name){
+        List<Student> student = studentService.searchStudent(name);
+        return student;
+    }
 }
