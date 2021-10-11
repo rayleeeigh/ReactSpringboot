@@ -24,8 +24,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Optional<Student> findByEmail(String email){
-        return studentRepository.findByEmail(email);
+    public Optional<Student> findByEmail(String email) {
+        return Optional.empty();
     }
 
     @Override
@@ -49,5 +49,10 @@ public class StudentServiceImpl implements StudentService {
         oldStud.setYear(student.getYear());
         studentRepository.save(oldStud);
         return oldStud;
+    }
+
+    @Override
+    public List<Student> searchStudent(String name){
+        return studentRepository.searchStudents(name);
     }
 }

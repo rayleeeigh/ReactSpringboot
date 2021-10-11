@@ -17,37 +17,59 @@ import {
   useDisclosure,
   Avatar,
   useToast,
+  Select,
+  Checkbox,
+  Center
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Index() {
-  const [name, setName] = useState("");
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
   const [course, setCourse] = useState("");
   const [year, setYear] = useState(0);
   const [email, setEmail] = useState("");
-  const [updateName, setUpdateName] = useState("");
+  const [updateFirstName, setUpdateFirstName] = useState("");
+  const [updateLastName, setUpdateLastName] = useState("");
   const [updateCourse, setUpdateCourse] = useState("");
   const [updateYear, setUpdateYear] = useState(0);
   const [updateEmail, setUpdateEmail] = useState("");
   const [students, setStudents] = useState([]);
   const toast = useToast();
+  const [instructors, setInstructors] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [instructor, setInstructor] = useState(null);
   const [estuds, setEStuds] = useState({
     id: "",
-    name: "",
+    first_name: "",
+    last_name: "",
     course: "",
     year: "",
     email: "",
   });
 
+  const [studentCheck,setStudentCheck]=useState(true);
+  const [instructorCheck,setInstructorCheck]=useState(true);
+  const [subjectCheck,setSubjectCheck]=useState(true);
+
+  const [search,setSearch]=useState("");
+
   const addStudent = (e) => {
     e.preventDefault();
     const student = {
-      name,
-      email,
-      course,
-      year,
+      firstName: firstname,
+      lastName: lastname,
+      email: email,
+      course: course,
+      year: year,
+      instructor_id: instructor
     };
+
+    axios.get("http://localhost:8080/instructor/view/"+instructor).then((response) => {
+      student.instructor_id = response.data;
+    });
+
     axios.post("http://localhost:8080/student/add", student).then(() => {
       toast({
         title: "Student Add",
@@ -78,12 +100,14 @@ export default function Index() {
   const updateStudent = (id) => {
     // alert(Ename + " " + id);
     const student = {
-      name,
+      first_name: "",
+      last_name: "",
       email,
       course,
       year,
     };
-    student.name = updateName;
+    student.first_name = updateFirstName;
+    student.last_name = updateLastName;
     student.email = updateEmail;
     student.course = updateCourse;
     student.year = updateYear;
@@ -109,11 +133,68 @@ export default function Index() {
     onEditOpen();
   };
 
-  useEffect(() => {
-    axios.get("http://localhost:8080/student/view").then((response) => {
+  function viewStudents (){
+    if (!studentCheck){
+      axios.get("http://localhost:8080/student/view").then((response) => {
+        setStudents(response.data);
+      });
+    }
+    else{
+      setStudents([]);
+    }
+    setStudentCheck(!studentCheck)
+  }
+
+  function viewInstructors (){
+    if (!instructorCheck){
+      axios.get("http://localhost:8080/instructor/view").then((response) => {
+        setInstructors(response.data);
+      });
+    }
+    else{
+      setInstructors([]);
+    }
+    setInstructorCheck(!instructorCheck)
+  }
+
+  function viewSubjects (){
+    if (!subjectCheck){
+      axios.get("http://localhost:8080/subject/view").then((response) => {
+        setSubjects(response.data);
+      });
+    }
+    else{
+      setSubjects([]);
+    }
+    setSubjectCheck(!subjectCheck)
+  }
+
+  const searchStudents = (e)=>{
+    setSearch(e.target.value)
+    axios.get("http://localhost:8080/student/viewStudent/get?name="+search).then((response)=>{
       setStudents(response.data);
+    })
+  }
+
+    useEffect(() => {
+      axios.get("http://localhost:8080/student/view").then((response) => {
+        setStudents(response.data);
+      });
+    }, []);
+
+  useEffect(() => {
+    axios.get("http://localhost:8080/instructor/view").then((response) => {
+      setInstructors(response.data);
     });
   }, []);
+
+  useEffect(() => {
+    axios.get("http://localhost:8080/subject/view").then((response) => {
+      setSubjects(response.data);
+    });
+  }, []);
+
+  
 
   // }
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -149,13 +230,22 @@ export default function Index() {
               <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
                 Edit student
               </Heading>
-              <Text fontSize={{ base: "sm", sm: "md" }}>Name</Text>
+              <Text fontSize={{ base: "sm", sm: "md" }}>First Name</Text>
               <FormControl>
                 <Input
                   placeholder={estuds.name}
                   type="text"
-                  value={updateName}
-                  onChange={(e) => setUpdateName(e.target.value)}
+                  value={updateFirstName}
+                  onChange={(e) => setUpdateFirstName(e.target.value)}
+                />
+              </FormControl>
+              <Text fontSize={{ base: "sm", sm: "md" }}>Last Name</Text>
+              <FormControl>
+                <Input
+                  placeholder={estuds.name}
+                  type="text"
+                  value={updateLastName}
+                  onChange={(e) => setUpdateLastName(e.target.value)}
                 />
               </FormControl>
               <Text fontSize={{ base: "sm", sm: "md" }}>Course</Text>
@@ -219,8 +309,8 @@ export default function Index() {
           <ModalCloseButton />
           <ModalBody>
             <ol>
-              {students.map((student) => (
-                <li key={student.id}>{student.name}</li>
+              {instructors.map((instructor) => (
+                <li key={instructor.id}>{instructor.instructor_first_name} {instructor.instructor_last_name}</li>
               ))}
             </ol>
           </ModalBody>
@@ -251,13 +341,22 @@ export default function Index() {
               <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
                 Add student
               </Heading>
-              <Text fontSize={{ base: "sm", sm: "md" }}>Name</Text>
+              <Text fontSize={{ base: "sm", sm: "md" }}>First Name</Text>
               <FormControl>
                 <Input
-                  placeholder="Name"
+                  placeholder="First Name"
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={firstname}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </FormControl>
+              <Text fontSize={{ base: "sm", sm: "md" }}>Last Name</Text>
+              <FormControl>
+                <Input
+                  placeholder="Last Name"
+                  type="text"
+                  value={lastname}
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </FormControl>
               <Text fontSize={{ base: "sm", sm: "md" }}>Course</Text>
@@ -287,6 +386,11 @@ export default function Index() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormControl>
+              <Select placeholder="Select Instructor" onChange={(e) => setInstructor(e.target.value)}>
+              {instructors.map((instructor) => (
+                <option key={instructor.id} value={instructor.id}>{instructor.instructor_first_name} {instructor.instructor_last_name}</option>
+              ))}
+              </Select>
             </Stack>
           </ModalBody>
 
@@ -307,6 +411,24 @@ export default function Index() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      
+      <Center>
+      <Flex display="block" align={"center"} justify={"center"} bg="gray.500">
+          <Checkbox isChecked={studentCheck} onChange={viewStudents} value="student">Student's Name</Checkbox>
+          <Checkbox isChecked={instructorCheck} onChange={viewInstructors} value="subject">Subject</Checkbox>
+          <Checkbox isChecked={subjectCheck} onChange={viewSubjects} value="instructor">Instructor</Checkbox>
+      </Flex>
+      </Center>
+      <Center>
+      <Input
+            placeholder="Search..."
+            type="text"
+            value={search}
+            onChange={searchStudents}
+            display="block"
+            w="40%"
+      />
+      </Center>
 
       <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.500">
         <Stack
@@ -350,7 +472,7 @@ export default function Index() {
                 }}
               />
               <Heading fontSize={"2xl"} fontFamily={"body"}>
-                {student.name}
+                {student.firstName} {student.lastName}
               </Heading>
               <Text fontWeight={600} color={"gray.500"} mb={4}>
                 {student.course}-{student.year}
@@ -398,6 +520,150 @@ export default function Index() {
               </Stack>
             </Box>
           ))}
+
+          <Stack
+            spacing={4}
+            w={"full"}
+            maxW={"80%"}
+            display="inline-block"
+          >
+          {instructors.map((instructor) => (
+            <Box
+              maxW={"320px"}
+              w={"full"}
+              bg="gray.300"
+              boxShadow={"2xl"}
+              rounded={"lg"}
+              p={6}
+              textAlign={"center"}
+              display="inline-block"
+              key={instructor.instructor_id}
+            >
+              <Avatar
+                size={"xl"}
+                alt={"Avatar Alt"}
+                mb={4}
+                pos={"relative"}
+                _after={{
+                  content: '""',
+                  w: 4,
+                  h: 4,
+                  bg: "green.300",
+                  border: "2px solid white",
+                  rounded: "full",
+                  pos: "absolute",
+                  bottom: 0,
+                  right: 3,
+                }}
+              />
+              <Heading fontSize={"2xl"} fontFamily={"body"}>
+                {instructor.instructor_first_name} {instructor.instructor_last_name}
+              </Heading>
+              <Text textAlign={"center"} px={3}>
+                Email: {instructor.instructor_email}
+              </Text>
+
+              <Stack mt={8} direction={"row"} spacing={4}>
+                <Button
+                  flex={1}
+                  fontSize={"sm"}
+                  rounded={"full"}
+                  _focus={{
+                    bg: "gray.200",
+                  }}
+                >
+                  Edit Info
+                </Button>
+
+                <Button
+                  flex={1}
+                  fontSize={"sm"}
+                  rounded={"full"}
+                  bg={"blue.400"}
+                  color={"white"}
+                  boxShadow={
+                    "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                  }
+                  _hover={{
+                    bg: "blue.500",
+                  }}
+                  _focus={{
+                    bg: "blue.500",
+                  }}
+                >
+                  Delete
+                </Button>
+              </Stack>
+            </Box>
+          ))}
+
+          {subjects.map((subject) => (
+            <Box
+              maxW={"320px"}
+              w={"full"}
+              bg="gray.300"
+              boxShadow={"2xl"}
+              rounded={"lg"}
+              p={6}
+              textAlign={"center"}
+              display="inline-block"
+              key={subject.subject_id}
+            >
+              <Avatar
+                size={"xl"}
+                alt={"Avatar Alt"}
+                mb={4}
+                pos={"relative"}
+                _after={{
+                  content: '""',
+                  w: 4,
+                  h: 4,
+                  bg: "green.300",
+                  border: "2px solid white",
+                  rounded: "full",
+                  pos: "absolute",
+                  bottom: 0,
+                  right: 3,
+                }}
+              />
+              <Heading fontSize={"2xl"} fontFamily={"body"}>
+                {subject.subject_name}
+              </Heading>
+
+              <Stack mt={8} direction={"row"} spacing={4}>
+                <Button
+                  flex={1}
+                  fontSize={"sm"}
+                  rounded={"full"}
+                  _focus={{
+                    bg: "gray.200",
+                  }}
+                >
+                  Edit Info
+                </Button>
+
+                <Button
+                  flex={1}
+                  fontSize={"sm"}
+                  rounded={"full"}
+                  bg={"blue.400"}
+                  color={"white"}
+                  boxShadow={
+                    "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                  }
+                  _hover={{
+                    bg: "blue.500",
+                  }}
+                  _focus={{
+                    bg: "blue.500",
+                  }}
+                >
+                  Delete
+                </Button>
+              </Stack>
+            </Box>
+          ))}
+          </Stack>
         </Stack>
       </Flex>
     </Box>
