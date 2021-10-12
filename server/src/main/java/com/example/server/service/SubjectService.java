@@ -12,4 +12,5 @@ public interface SubjectService {
     public List<Subject> getAllSubjects();
     public void removeSubject(Integer id);
     public Subject updateSubject(Integer id,Subject subject);
+    public Subject enrollStudent(Integer subjectID, Integer studentID);
 }

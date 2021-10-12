@@ -1,6 +1,10 @@
 package com.example.server.service;
 
+import com.example.server.model.Contact;
+import com.example.server.model.Instructor;
 import com.example.server.model.Student;
+import com.example.server.repository.ContactRepository;
+import com.example.server.repository.InstructorRepository;
 import com.example.server.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +16,12 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private ContactRepository contactRepository;
+
+    @Autowired
+    private InstructorRepository instructorRepository;
 
     @Override
     public Student saveStudent(Student student) {
@@ -54,5 +64,26 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> searchStudent(String name){
         return studentRepository.searchStudents(name);
+    }
+
+    @Override
+    public Student addContact(Integer contactID,Integer studentID){
+        Student student = studentRepository.findById(studentID).get();
+        Contact contact = contactRepository.findById(contactID).get();
+        student.addContactToStudent(contact);
+        contact.setStudent(student);
+        studentRepository.save(student);
+        contactRepository.save(contact);
+        return student;
+    }
+
+    @Override
+    public Student assignInstructor(Integer instructorID, Integer studentID){
+        Student student = studentRepository.findById(studentID).get();
+        Instructor instructor = instructorRepository.findById(instructorID).get();
+        student.assignInstructor(instructor);
+        studentRepository.save(student);
+
+        return student;
     }
 }
