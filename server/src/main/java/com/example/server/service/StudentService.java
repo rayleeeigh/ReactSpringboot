@@ -13,4 +13,6 @@ public interface StudentService {
     public void removeStudent(Integer id);
     public Student updateStudent(Integer id,Student student);
     public List<Student> searchStudent(String name);
+    public Student addContact(Integer contactID,Integer studentID);
+    public Student assignInstructor(Integer instructorID, Integer studentID);
 }
