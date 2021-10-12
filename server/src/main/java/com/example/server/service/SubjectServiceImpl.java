@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SubjectServiceImpl implements SubjectService{
@@ -24,8 +23,8 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
-    public Optional<Subject> findById(Integer id) {
-        return Optional.empty();
+    public Subject findById(Integer id) {
+        return subjectRepository.findById(id).orElse(null);
     }
 
     @Override

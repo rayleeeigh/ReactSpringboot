@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Table(name = "contact")
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

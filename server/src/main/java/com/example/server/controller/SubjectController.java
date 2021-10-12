@@ -22,6 +22,7 @@ public class SubjectController {
     public void addSubject(@RequestBody Subject subject){ //@RequestBody binds the HTTP request body to the handler method paramater "student"
         subjectService.saveSubject(subject);
     }
+
     @GetMapping("/view")
     public List<Subject> getAllSubjects(){
         return subjectService.getAllSubjects();

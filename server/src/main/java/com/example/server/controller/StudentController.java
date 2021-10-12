@@ -47,6 +47,13 @@ public class StudentController {
         return student;
     }
 
-
+    @PutMapping("/addInstructor/{instructorID}/students/{studentID}")
+    public Student assignInstructorToStudent(
+            @PathVariable int instructorID,
+            @PathVariable int studentID
+    ){
+        System.out.println(instructorID);
+        return studentService.assignInstructor(instructorID,studentID);
+    }
 
 }
