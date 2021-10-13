@@ -27,7 +27,6 @@ public class Instructor {
     private List<Student>students;
 
 
-
     @Column(name="instructor_first_name", nullable = false, length = 64)
     private String instructor_first_name;
     @Column(name="instructor_last_name", nullable = false, length = 64)
