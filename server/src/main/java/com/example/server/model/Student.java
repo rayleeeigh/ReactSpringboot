@@ -36,12 +36,7 @@ public class Student {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "enrolledStudents")
-    @JoinTable(
-            name = "student_enrolled",
-            joinColumns = @JoinColumn(name = "subject_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    private List<Subject> subjects = new ArrayList<Subject>();
+    private Set<Subject> subjects = new HashSet<>();
 
     @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinColumn(name="instructor_id",referencedColumnName = "instructor_id")

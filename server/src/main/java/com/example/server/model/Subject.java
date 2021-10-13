@@ -22,13 +22,13 @@ public class Subject {
     @Column(name="subject_name", nullable = false, length = 64)
     private String subject_name;
 
-//    @JsonIgnore
-//    @ManyToMany
-//    @JoinTable(
-//            name = "student_enrolled",
-//            joinColumns = @JoinColumn(name = "subject_id"),
-//            inverseJoinColumns = @JoinColumn(name = "student_id")
-//    )
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "student_enrolled",
+            joinColumns = @JoinColumn(name = "subject_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
     private Set<Student> enrolledStudents = new HashSet<>();
 
     public void enrollStudent(Student student) {

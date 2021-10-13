@@ -72,4 +72,12 @@ public class StudentController {
         System.out.println(instructorID);
         return studentService.assign(instructorID,student);
     }
+
+    @PutMapping("/contact/{contactID}/students/{studentID}")
+    public Contact assignContactStudent(
+            @PathVariable int contactID,
+            @PathVariable int studentID
+    ){
+        return studentService.assignContact(contactID,studentID);
+    }
 }

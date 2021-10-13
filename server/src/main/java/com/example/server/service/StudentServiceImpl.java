@@ -1,5 +1,6 @@
 package com.example.server.service;
 
+import com.example.server.exception.ContactExistException;
 import com.example.server.model.Contact;
 import com.example.server.model.Instructor;
 import com.example.server.model.Student;
@@ -10,6 +11,7 @@ import com.example.server.repository.StudentRepository;
 import com.example.server.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.server.exception.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
+    private ContactExistException contactExistException;
+    private int flag=0;
 
     @Override
     public Student saveStudent(Student student) {
@@ -105,5 +110,33 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(studentID).get();
         subject.enrollStudent(student);
         return subjectRepository.save(subject);
+    }
+
+    @Override
+    public Contact assignContact(Integer contactID, Integer studentID){
+        Student student = studentRepository.findById(studentID).get();
+        Contact contact = contactRepository.findById(contactID).get();
+
+        List<Student> studs= studentRepository.findAll();
+        for(Student st : studs){
+//            System.out.println(st.getContact().getContact_id());
+            if(st.getContact()==null){
+                flag=0;
+            }else if(st.getContact().getContact_id() == contactID){
+                flag=1;
+                break;
+            }else{
+                flag=0;
+            }
+        }
+
+        if(flag==0){
+            student.setContact(contact);
+            contact.setStudent(student);
+            contactRepository.save(contact);
+            studentRepository.save(student);
+        }
+
+        return contact;
     }
 }

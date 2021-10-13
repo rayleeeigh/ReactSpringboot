@@ -1,5 +1,6 @@
 package com.example.server.service;
 
+import com.example.server.model.Contact;
 import com.example.server.model.Student;
 import com.example.server.model.Subject;
 
@@ -19,4 +20,6 @@ public interface StudentService {
     public Student assign(Integer instructorID,Student student);
 
     public Subject enrollStudent(Integer subjectID, Integer studentID);
+
+    Contact assignContact(Integer contactID, Integer studentID);
 }
