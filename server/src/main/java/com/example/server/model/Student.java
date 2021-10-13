@@ -8,7 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "Student") // used to specify more details about the table associated to the class.
@@ -34,7 +36,12 @@ public class Student {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "enrolledStudents")
-    private Set<Subject> subjects = new HashSet<>();
+    @JoinTable(
+            name = "student_enrolled",
+            joinColumns = @JoinColumn(name = "subject_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private List<Subject> subjects = new ArrayList<Subject>();
 
     @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinColumn(name="instructor_id",referencedColumnName = "instructor_id")
