@@ -10,4 +10,5 @@ public interface InstructorService {
     public Instructor saveInstructor(Instructor instructor);
     public List<Instructor> getAllInstructors();
     Optional<Instructor> findById(Integer id);
+    public Instructor assignStudent(Integer id, Integer studentId);
 }

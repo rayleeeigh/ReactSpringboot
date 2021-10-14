@@ -57,20 +57,11 @@ public class StudentController {
     }
 
     @PutMapping("/enroll/{subjectID}/students/{studentID}")
-    public Subject enrollStudentSubject(
+    public Student enrollStudentSubject(
             @PathVariable int subjectID,
             @PathVariable int studentID
     ){
         return studentService.enrollStudent(subjectID,studentID);
-    }
-
-    @PutMapping("/enrollStudent/{instructorID}/")
-    public Student assignInstructorToStudent(
-            @PathVariable int instructorID,
-            @RequestBody Student student
-    ){
-        System.out.println(instructorID);
-        return studentService.assign(instructorID,student);
     }
 
     @PutMapping("/contact/{contactID}/students/{studentID}")

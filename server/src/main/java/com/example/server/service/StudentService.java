@@ -17,9 +17,9 @@ public interface StudentService {
     public List<Student> searchStudent(String name);
     public Student addContact(Integer contactID,Integer studentID);
     public Student assignInstructor(Integer instructorID, Integer studentID);
-    public Student assign(Integer instructorID,Student student);
+//    public Student assign(Integer instructorID,Student student);
 
-    public Subject enrollStudent(Integer subjectID, Integer studentID);
+    public Student enrollStudent(Integer subjectID, Integer studentID);
 
     Contact assignContact(Integer contactID, Integer studentID);
 }

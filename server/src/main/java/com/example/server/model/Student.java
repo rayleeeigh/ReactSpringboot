@@ -22,6 +22,7 @@ import java.util.Set;
 public class Student {
     @Id //bind the annotated field to the primary key column
     @GeneratedValue( strategy =  GenerationType.IDENTITY) // defines the primary key generate.IDENTITY means the values of the primary key will be generated using auto increment.
+    @Column(name = "studentId")
     private int id;
     @Column(name="firstName", nullable = false, length = 64)
     private String firstName;
@@ -33,20 +34,24 @@ public class Student {
     private String course;
     @Column(name = "year",nullable = false,length = 1)
     private int year;
+    @Column( nullable = true,name = "instructorId" )
+    private Integer instructorId;
+
+//    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+//    @JoinColumn(name="instructor_id",referencedColumnName = "instructor_id")
+//    @JsonIgnoreProperties("Student")
+//    private Instructor instructor;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "enrolledStudents")
-    private Set<Subject> subjects = new HashSet<>();
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-    @JoinColumn(name="instructor_id",referencedColumnName = "instructor_id")
-    @JsonIgnoreProperties("Student")
-    private Instructor instructor;
-
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="contact_id",referencedColumnName = "contact_id")
+    @OneToOne(targetEntity = Contact.class,cascade = CascadeType.ALL)
+    @JoinColumn(name="contact_id")
     private Contact contact;
+
+    @JsonIgnore
+    @ManyToMany(targetEntity = Subject.class,cascade = CascadeType.ALL)
+    @JoinTable(name = "student_enrolled", joinColumns = @JoinColumn(name = "studentId"),
+            inverseJoinColumns = @JoinColumn(name="subjectId") )
+    private Set<Subject> subjects = new HashSet<>();
 
     public void setStudent(String fname,String lname,String course,int year,String email){
         this.firstName=fname;
@@ -56,7 +61,19 @@ public class Student {
         this.email=email;
     }
 
-    public void assignInstructor(Instructor instructor){this.instructor=instructor;}
+//    public void assignInstructor(Instructor instructor){this.instructor=instructor;}
 
     public void addContactToStudent(Contact contact){this.contact=contact;}
+
+    public int getInstructorId(){
+        return this.instructorId;
+    }
+
+    public void setInstructorId(Integer InstructorId){
+        this.instructorId = InstructorId;
+    }
+
+    public void enrollStud(Subject subject){
+        this.subjects.add(subject);
+    }
 }

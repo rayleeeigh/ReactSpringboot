@@ -21,17 +21,17 @@ import java.util.List;
 public class Instructor {
     @Id
     @GeneratedValue( strategy =  GenerationType.IDENTITY)
-    private int instructor_id;
-    @OneToMany(fetch=FetchType.EAGER, mappedBy = "instructor",cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("instructor")
+    private int id;
+
+    @OneToMany( targetEntity = Student.class,cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Student>students;
 
 
-    @Column(name="instructor_first_name", nullable = false, length = 64)
-    private String instructor_first_name;
-    @Column(name="instructor_last_name", nullable = false, length = 64)
-    private String instructor_last_name;
-    @Column(name="instructor_email", nullable = false, length = 64)
-    private String instructor_email;
+    @Column(name="instructorFirstname", nullable = false, length = 64)
+    private String firstName;
+    @Column(name="instructorLastname", nullable = false, length = 64)
+    private String lastName;
+    @Column(name="instructorEmail", nullable = false, length = 64)
+    private String email;
 
 }

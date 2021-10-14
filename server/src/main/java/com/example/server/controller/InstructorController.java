@@ -31,5 +31,10 @@ public class InstructorController {
         return instructor;
     }
 
+    @PutMapping("/assignInstructor/{instructorId}/student/{studentId}")
+    public Instructor assignStudentToInstructor(@PathVariable Integer instructorId, @PathVariable Integer studentId){
+        return instructorService.assignStudent(instructorId,studentId);
+    }
+
 
 }

@@ -18,20 +18,11 @@ import java.util.Set;
 public class Subject {
     @Id
     @GeneratedValue( strategy =  GenerationType.IDENTITY)
-    private int subject_id;
-    @Column(name="subject_name", nullable = false, length = 64)
-    private String subject_name;
+    @Column(name = "subjectId")
+    private int id;
+    @Column(name="subjectName", nullable = false, length = 64)
+    private String name;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "student_enrolled",
-            joinColumns = @JoinColumn(name = "subject_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    private Set<Student> enrolledStudents = new HashSet<>();
 
-    public void enrollStudent(Student student) {
-        enrolledStudents.add(student);
-    }
+
 }

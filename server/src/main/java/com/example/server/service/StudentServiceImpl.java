@@ -81,7 +81,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(studentID).get();
         Contact contact = contactRepository.findById(contactID).get();
         student.addContactToStudent(contact);
-        contact.setStudent(student);
+        contact.setStudentId(studentID);
         studentRepository.save(student);
         contactRepository.save(contact);
         return student;
@@ -91,25 +91,27 @@ public class StudentServiceImpl implements StudentService {
     public Student assignInstructor(Integer instructorID, Integer studentID){
         Student student = studentRepository.findById(studentID).get();
         Instructor instructor = instructorRepository.findById(instructorID).get();
-        student.assignInstructor(instructor);
+        student.setInstructorId(instructorID);
+        instructor.getStudents().add(student);
         studentRepository.save(student);
 
         return student;
     }
 
-    @Override
-    public Student assign(Integer instructorID,Student student){
-        Instructor instructor = instructorRepository.findById(instructorID).get();
-        student.assignInstructor(instructor);
-        return studentRepository.save(student);
-    }
+//    @Override
+//    public Student assign(Integer instructorID,Student student){
+//        Instructor instructor = instructorRepository.findById(instructorID).get();
+//        student.assignInstructor(instructor);
+//        return studentRepository.save(student);
+//    }
 
     @Override
-    public Subject enrollStudent(Integer subjectID, Integer studentID){
+    public Student enrollStudent(Integer subjectID, Integer studentID){
         Subject subject = subjectRepository.findById(subjectID).get();
         Student student = studentRepository.findById(studentID).get();
-        subject.enrollStudent(student);
-        return subjectRepository.save(subject);
+        student.enrollStud(subject);
+//        subject.enrollStudent(student);
+        return studentRepository.save(student);
     }
 
     @Override
@@ -122,7 +124,7 @@ public class StudentServiceImpl implements StudentService {
 //            System.out.println(st.getContact().getContact_id());
             if(st.getContact()==null){
                 flag=0;
-            }else if(st.getContact().getContact_id() == contactID){
+            }else if(st.getContact().getId() == contactID){
                 flag=1;
                 break;
             }else{
@@ -132,7 +134,7 @@ public class StudentServiceImpl implements StudentService {
 
         if(flag==0){
             student.setContact(contact);
-            contact.setStudent(student);
+            contact.setStudentId(studentID);
             contactRepository.save(contact);
             studentRepository.save(student);
         }

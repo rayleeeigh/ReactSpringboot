@@ -25,8 +25,8 @@ public class ContactServiceImpl implements ContactService{
     }
     @Override
     public Contact updateContact(Contact contact){
-        Contact contact1=contactRepository.findById(contact.getContact_id()).orElse(null);
-        contact1.setContact(contact.getContact_guardian_fname(),contact.getContact_guardian_lname(),contact.getContact_number(),contact.getContact_address_city());
+        Contact contact1=contactRepository.findById(contact.getId()).orElse(null);
+        contact1.setContact(contact.getFirstname(),contact.getFirstname(),contact.getNumber(),contact.getAddress());
         contactRepository.save(contact1);
         return contact1;
     }
