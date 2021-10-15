@@ -1,8 +1,6 @@
 package com.example.server.service;
 
-import com.example.server.model.Student;
 import com.example.server.model.Subject;
-import com.example.server.repository.StudentRepository;
 import com.example.server.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,18 +12,6 @@ public class SubjectServiceImpl implements SubjectService{
     @Autowired
     private SubjectRepository subjectRepository;
 
-    @Autowired
-    private StudentRepository studentRepository;
-
-    @Override
-    public Subject saveSubject(Subject subject) {
-        return subjectRepository.save(subject);
-    }
-
-    @Override
-    public Subject findById(Integer id) {
-        return subjectRepository.findById(id).orElse(null);
-    }
 
     @Override
     public List<Subject> getAllSubjects() {
@@ -33,20 +19,30 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
+    public void saveSubject(Subject subject) {
+        Subject newSub = new Subject();
+        newSub.setName(subject.getName());
+        Subject savedSub = subjectRepository.save(newSub);
+        if(subjectRepository.findById(savedSub.getId()).isPresent()){
+            System.out.println("Successfully Created Subject!");
+        }else{
+            System.out.println("Failed to Create New Subject");
+        }
+    }
+
+    @Override
     public void removeSubject(Integer id) {
-        subjectRepository.deleteById(id);
+        if(subjectRepository.findById(id).isPresent()){
+            subjectRepository.deleteById(id);
+            if(subjectRepository.findById(id).isPresent()){
+                System.out.println("Failed to delete specific subject");
+            }else{
+                System.out.println("Successfully deleted subject!");
+            }
+        }else{
+            System.out.println("No records found");
+        }
     }
 
-    @Override
-    public Subject updateSubject(Integer id, Subject subject) {
-        return null;
-    }
 
-    @Override
-    public Subject enrollStudent(Integer subjectID, Integer studentID){
-        Subject subject = subjectRepository.findById(subjectID).get();
-        Student student = studentRepository.findById(studentID).get();
-        subject.enrollStudent(student);
-        return subjectRepository.save(subject);
-    }
 }

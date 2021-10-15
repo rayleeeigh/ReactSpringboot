@@ -1,35 +1,31 @@
 package com.example.server.controller;
 
 import com.example.server.exception.InstructorNotFoundException;
-import com.example.server.model.*;
+import com.example.server.model.Instructor;
 import com.example.server.service.InstructorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/instructor")
+@RequestMapping("/api")
 @CrossOrigin
 public class InstructorController {
     @Autowired
     private InstructorService instructorService;
-
-    @PostMapping("/add")
-    public void addInstructor(@RequestBody Instructor instructor){
-        instructorService.saveInstructor(instructor);
-    }
-
-    @GetMapping("/view")
+    @GetMapping(value = "/instructors")
     public List<Instructor> getAllInstructors(){
         return instructorService.getAllInstructors();
     }
-
-    @GetMapping("/view/{id}")
-    public Instructor getInstructorById(@PathVariable("id") Integer id){
-        Instructor instructor = instructorService.findById(id).orElseThrow(()->new InstructorNotFoundException("Instructor with "+id+" is not found!"));
-        return instructor;
+    @PostMapping(value = "/instructors")
+    public void saveInstructor(@RequestBody Instructor instructor){
+        instructorService.saveInstructor(instructor);
     }
 
-
+    @DeleteMapping(value = "/instructors/{id}")
+    public void deleteInstructor(@PathVariable Integer id){
+        instructorService.removeInstructorById(id);
+    }
 }

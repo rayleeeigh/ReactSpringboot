@@ -1,13 +1,14 @@
 package com.example.server.service;
 
 import com.example.server.model.Instructor;
-import com.example.server.model.Student;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface InstructorService {
-    public Instructor saveInstructor(Instructor instructor);
-    public List<Instructor> getAllInstructors();
+    public List<Instructor>getAllInstructors();
+    public void saveInstructor(Instructor instructor);
+    Optional<Instructor> findByEmail(String email);
     Optional<Instructor> findById(Integer id);
+    public void removeInstructorById(Integer id);
 }

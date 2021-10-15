@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Data
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class InstructorNotFoundException extends RuntimeException{
-    String message;
-
+public class InstructorNotFoundException extends RuntimeException {
+    private String message;
     public InstructorNotFoundException(String message){
         this.message = message;
     }

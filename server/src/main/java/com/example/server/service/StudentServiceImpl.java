@@ -1,17 +1,11 @@
 package com.example.server.service;
 
-import com.example.server.exception.ContactExistException;
-import com.example.server.model.Contact;
-import com.example.server.model.Instructor;
 import com.example.server.model.Student;
-import com.example.server.model.Subject;
 import com.example.server.repository.ContactRepository;
-import com.example.server.repository.InstructorRepository;
 import com.example.server.repository.StudentRepository;
 import com.example.server.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.server.exception.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,22 +14,27 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentRepository studentRepository;
-
     @Autowired
     private ContactRepository contactRepository;
-
-    @Autowired
-    private InstructorRepository instructorRepository;
-
     @Autowired
     private SubjectRepository subjectRepository;
-
-    private ContactExistException contactExistException;
-    private int flag=0;
-
     @Override
-    public Student saveStudent(Student student) {
-        return studentRepository.save(student);
+    public void saveStudent(Student student) {
+        Student stud = new Student();
+        stud.setFirstName(student.getFirstName());
+        stud.setLastName(student.getLastName());
+        stud.setEmail(student.getEmail());
+        stud.setCourse(student.getCourse());
+        stud.setYear(student.getYear());
+        stud.setContact(student.getContact());
+        stud.setSubjects(student.getSubjects());
+
+        Student savedStudent = studentRepository.save(stud);
+        if(studentRepository.findById(savedStudent.getId()).isPresent()){
+            System.out.println("Successfully created student");
+        }else{
+            System.out.println("Failed to create new student record");
+        }
     }
 
     @Override
@@ -44,8 +43,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Optional<Student> findByEmail(String email) {
-        return Optional.empty();
+    public Optional<Student> findByEmail(String email){
+        return studentRepository.findByEmail(email);
     }
 
     @Override
@@ -55,88 +54,39 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void removeStudent(Integer id) {
-        studentRepository.deleteById(id);
-    }
-
-    @Override
-    public Student updateStudent(Integer id,Student student){
-        System.out.println(student);
-        Student oldStud = studentRepository.findById(id).orElse(student);
-        oldStud.setFirstName(student.getFirstName());
-        oldStud.setLastName(student.getLastName());
-        oldStud.setEmail(student.getEmail());
-        oldStud.setCourse(student.getCourse());
-        oldStud.setYear(student.getYear());
-        studentRepository.save(oldStud);
-        return oldStud;
-    }
-
-    @Override
-    public List<Student> searchStudent(String name){
-        return studentRepository.searchStudents(name);
-    }
-
-    @Override
-    public Student addContact(Integer contactID,Integer studentID){
-        Student student = studentRepository.findById(studentID).get();
-        Contact contact = contactRepository.findById(contactID).get();
-        student.addContactToStudent(contact);
-        contact.setStudent(student);
-        studentRepository.save(student);
-        contactRepository.save(contact);
-        return student;
-    }
-
-    @Override
-    public Student assignInstructor(Integer instructorID, Integer studentID){
-        Student student = studentRepository.findById(studentID).get();
-        Instructor instructor = instructorRepository.findById(instructorID).get();
-        student.assignInstructor(instructor);
-        studentRepository.save(student);
-
-        return student;
-    }
-
-    @Override
-    public Student assign(Integer instructorID,Student student){
-        Instructor instructor = instructorRepository.findById(instructorID).get();
-        student.assignInstructor(instructor);
-        return studentRepository.save(student);
-    }
-
-    @Override
-    public Subject enrollStudent(Integer subjectID, Integer studentID){
-        Subject subject = subjectRepository.findById(subjectID).get();
-        Student student = studentRepository.findById(studentID).get();
-        subject.enrollStudent(student);
-        return subjectRepository.save(subject);
-    }
-
-    @Override
-    public Contact assignContact(Integer contactID, Integer studentID){
-        Student student = studentRepository.findById(studentID).get();
-        Contact contact = contactRepository.findById(contactID).get();
-
-        List<Student> studs= studentRepository.findAll();
-        for(Student st : studs){
-//            System.out.println(st.getContact().getContact_id());
-            if(st.getContact()==null){
-                flag=0;
-            }else if(st.getContact().getContact_id() == contactID){
-                flag=1;
-                break;
+        if(studentRepository.findById(id).isPresent()){
+            studentRepository.deleteById(id);
+            if(studentRepository.findById(id).isPresent()){
+                System.out.println("Failed to delete student");
             }else{
-                flag=0;
+                System.out.println("Successfully deleted student!");
             }
+        }else{
+            System.out.println("No records found");
         }
+    }
 
-        if(flag==0){
-            student.setContact(contact);
-            contact.setStudent(student);
-            contactRepository.save(contact);
-            studentRepository.save(student);
+    @Override
+    public void updateStudent(Integer id,Student student){
+        if(studentRepository.findById(id).isPresent()){
+            Student stud = studentRepository.findById(id).get();
+            stud.setFirstName(student.getFirstName());
+            stud.setLastName(student.getLastName());
+            stud.setEmail(student.getEmail());
+            stud.setCourse(student.getCourse());
+            stud.setYear(student.getYear());
+            stud.setSubjects(student.getSubjects());
+
+            contactRepository.deleteById(student.getContact().getId());
+            stud.setContact(student.getContact());
+            Student savedStudent = studentRepository.save(stud);
+            if(studentRepository.findById(savedStudent.getId()).isPresent()){
+                System.out.println("Successfully Updated Student!");
+            }else{
+                System.out.println("Failed to Update Student!");
+            }
+        }else{
+            System.out.println("No records found");
         }
-
-        return contact;
     }
 }

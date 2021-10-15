@@ -1,46 +1,35 @@
 package com.example.server.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.persistence.*;
 
-@Table(name = "contact")
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class Contact {
+@Table(name = "Contact")
+public class Contact implements Serializable {
     @Id
-    @GeneratedValue( strategy =  GenerationType.IDENTITY)
-    private int contact_id;
+    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @Column( name = "contactID")
+    private int id;
+    @Column( name = "contactFirstName")
+    private String firstName;
+    @Column( name= "contactLastName")
+    private String lastName;
+    @Column( name = "contactPhone")
+    private String phone;
+    @Column( name = "contactCity")
+    private String city;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "contact")
-    private Student student;
-
-    @Column(name="contact_guardian_fname", nullable = false, length = 64)
-    private String contact_guardian_fname;
-
-    @Column(name="contact_guardian_lname", nullable = false, length = 64)
-    private String contact_guardian_lname;
-
-    @Column(name="contact_number", nullable = false, length = 64)
-    private String contact_number;
-
-    @Column(name="contact_address_city", nullable = false, length = 64)
-    private String contact_address_city;
-
-    public void setContact(String fname,String lname,String number, String adress){
-        this.contact_guardian_fname=fname;
-        this.contact_guardian_lname=lname;
-        this.contact_number=number;
-        this.contact_address_city=adress;
-    }
-
-    public void setStudent(Student student){
-        this.student=student;
+    public Contact(String firstName, String lastName, String phone, String city) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.city = city;
     }
 }
