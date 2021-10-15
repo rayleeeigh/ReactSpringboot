@@ -24,4 +24,10 @@ public interface StudentRepository extends JpaRepository<Student,Integer> {
 
     @Query("SELECT p FROM Student p WHERE p.firstName LIKE %?1%")
     List<Student> search(String keyword);
+
+//    @Query("DELETE FROM student_enrolled WHERE student_id=:studentId")
+//    void deleteStudentSubject(int studentId);
+
+    @Query(value = "SELECT * FROM Student s WHERE instructor_id=:instructorId", nativeQuery = true)
+    List<Student> findInstructor(int instructorId);
 }

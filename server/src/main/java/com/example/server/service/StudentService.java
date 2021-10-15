@@ -18,4 +18,5 @@ public interface StudentService {
     public Student assignInstructor(Integer instructorID, Integer studentID);
     public Student enrollStudent(Integer subjectID, Integer studentID);
     Contact assignContact(Integer contactID, Integer studentID);
+    public String deleteInstructor(Integer studentId);
 }

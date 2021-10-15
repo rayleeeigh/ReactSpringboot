@@ -1,10 +1,6 @@
 package com.example.server.service;
 
-import com.example.server.exception.ContactExistException;
-import com.example.server.model.Contact;
-import com.example.server.model.Instructor;
-import com.example.server.model.Student;
-import com.example.server.model.Subject;
+import com.example.server.model.*;
 import com.example.server.repository.ContactRepository;
 import com.example.server.repository.InstructorRepository;
 import com.example.server.repository.StudentRepository;
@@ -53,6 +49,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void removeStudent(Integer id) {
+//        studentRepository.deleteStudentSubject(id);
+//        Student student = studentRepository.findById(id).get();
         studentRepository.deleteById(id);
     }
 
@@ -103,7 +101,6 @@ public class StudentServiceImpl implements StudentService {
         Subject subject = subjectRepository.findById(subjectID).get();
         Student student = studentRepository.findById(studentID).get();
         student.enrollStud(subject);
-//        subject.enrollStudent(student);
         return studentRepository.save(student);
     }
 
@@ -114,7 +111,6 @@ public class StudentServiceImpl implements StudentService {
 
         List<Student> studs= studentRepository.findAll();
         for(Student st : studs){
-//            System.out.println(st.getContact().getContact_id());
             if(st.getContact()==null){
                 flag=0;
             }else if(st.getContact().getId() == contactID){
@@ -134,4 +130,10 @@ public class StudentServiceImpl implements StudentService {
 
         return contact;
     }
+
+    @Override
+    public String deleteInstructor(Integer studentId){
+        return "Success";
+    }
+
 }

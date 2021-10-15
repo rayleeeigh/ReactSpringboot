@@ -32,4 +32,9 @@ public class SubjectController {
     ){
         return subjectService.enrollStudent(subjectID,studentID);
     }
+
+    @GetMapping("/getAllSubjects/{studentID}")
+    public List<Subject> getAllSubjectsStudent(@PathVariable int studentID){
+        return subjectService.getEnrolledSubject(studentID);
+    }
 }

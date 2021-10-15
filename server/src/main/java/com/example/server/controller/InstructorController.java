@@ -41,5 +41,9 @@ public class InstructorController {
         return instructorService.assignCreatedStudent(instructorId,student);
     }
 
+    @DeleteMapping("/deleteInstructor/{instructorId}")
+    public String deleteInstructor(@PathVariable Integer instructorId){
+        return instructorService.deleteInstructor(instructorId);
+    }
 
 }

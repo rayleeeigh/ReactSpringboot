@@ -53,4 +53,16 @@ public class InstructorServiceImpl implements InstructorService{
         instructorRepository.save(instructor);
         return instructor;
     }
+
+    @Override
+    public String deleteInstructor(Integer id){
+        List<Student> students = studentRepository.findInstructor(id);
+        for(Student studs:students){
+            studs.setInstructorId(null);
+            studentRepository.save(studs);
+        }
+        instructorRepository.deleteById(id);
+
+        return "Success";
+    }
 }

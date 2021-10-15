@@ -1,11 +1,12 @@
 package com.example.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -26,13 +27,13 @@ public class Student {
     private String firstName;
     @Column(name = "lastName", nullable = false, length = 32)
     private String lastName;
-    @Column(name = "email",nullable = false, length = 255)
+    @Column(name = "email",nullable = false)
     private String email;
     @Column(name = "course",nullable = false, length = 32)
     private String course;
     @Column(name = "year",nullable = false,length = 1)
     private int year;
-    @Column( nullable = true,name = "instructorId" )
+    @Column( name = "instructorId" )
     private Integer instructorId;
 
     @JsonIgnore
@@ -42,6 +43,7 @@ public class Student {
 
     @JsonIgnore
     @ManyToMany(targetEntity = Subject.class,cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "student_enrolled", joinColumns = @JoinColumn(name = "studentId"),
             inverseJoinColumns = @JoinColumn(name="subjectId") )
     private Set<Subject> subjects = new HashSet<>();
