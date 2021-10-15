@@ -43,4 +43,14 @@ public class InstructorServiceImpl implements InstructorService{
         instructorRepository.save(instructor);
         return instructor;
     }
+
+    @Override
+    public Instructor assignCreatedStudent(Integer id, Student student){
+        Instructor instructor=instructorRepository.findById(id).get();
+        student.setInstructorId(id);
+        studentRepository.save(student);
+        instructor.getStudents().add(student);
+        instructorRepository.save(instructor);
+        return instructor;
+    }
 }

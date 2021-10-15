@@ -1,9 +1,6 @@
 package com.example.server.controller;
 
-import com.example.server.model.Instructor;
-import com.example.server.model.Student;
 import com.example.server.model.Subject;
-import com.example.server.repository.StudentRepository;
 import com.example.server.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,6 @@
 package com.example.server.service;
 
 import com.example.server.model.Contact;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

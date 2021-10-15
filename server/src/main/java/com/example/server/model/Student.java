@@ -8,9 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Table(name = "Student") // used to specify more details about the table associated to the class.
@@ -37,11 +35,6 @@ public class Student {
     @Column( nullable = true,name = "instructorId" )
     private Integer instructorId;
 
-//    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-//    @JoinColumn(name="instructor_id",referencedColumnName = "instructor_id")
-//    @JsonIgnoreProperties("Student")
-//    private Instructor instructor;
-
     @JsonIgnore
     @OneToOne(targetEntity = Contact.class,cascade = CascadeType.ALL)
     @JoinColumn(name="contact_id")
@@ -61,7 +54,6 @@ public class Student {
         this.email=email;
     }
 
-//    public void assignInstructor(Instructor instructor){this.instructor=instructor;}
 
     public void addContactToStudent(Contact contact){this.contact=contact;}
 

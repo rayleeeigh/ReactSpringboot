@@ -36,5 +36,10 @@ public class InstructorController {
         return instructorService.assignStudent(instructorId,studentId);
     }
 
+    @PutMapping("/assignInstructor/{instructorId}")
+    public Instructor assignStudentsToInstructor(@PathVariable Integer instructorId, @RequestBody Student student){
+        return instructorService.assignCreatedStudent(instructorId,student);
+    }
+
 
 }

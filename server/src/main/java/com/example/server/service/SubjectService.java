@@ -1,6 +1,5 @@
 package com.example.server.service;
 
-import com.example.server.model.Student;
 import com.example.server.model.Subject;
 
 import java.util.List;

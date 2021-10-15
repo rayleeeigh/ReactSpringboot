@@ -46,7 +46,9 @@ public class SubjectServiceImpl implements SubjectService{
     public Subject enrollStudent(Integer subjectID, Integer studentID){
         Subject subject = subjectRepository.findById(subjectID).get();
         Student student = studentRepository.findById(studentID).get();
-//        subject.enrollStudent(student);
+        student.enrollStud(subject);
         return subjectRepository.save(subject);
     }
+
+
 }

@@ -11,8 +11,6 @@ import com.example.server.repository.StudentRepository;
 import com.example.server.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.server.exception.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +28,7 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private SubjectRepository subjectRepository;
 
-    private ContactExistException contactExistException;
+
     private int flag=0;
 
     @Override
@@ -98,12 +96,7 @@ public class StudentServiceImpl implements StudentService {
         return student;
     }
 
-//    @Override
-//    public Student assign(Integer instructorID,Student student){
-//        Instructor instructor = instructorRepository.findById(instructorID).get();
-//        student.assignInstructor(instructor);
-//        return studentRepository.save(student);
-//    }
+
 
     @Override
     public Student enrollStudent(Integer subjectID, Integer studentID){
