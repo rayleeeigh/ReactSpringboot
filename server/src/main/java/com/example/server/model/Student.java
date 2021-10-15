@@ -1,46 +1,72 @@
 package com.example.server.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Student")
-public class Student implements Serializable {
-    @Id
-    @GeneratedValue( strategy =  GenerationType.IDENTITY)
+public class Student {
+    @Id //bind the annotated field to the primary key column
+    @GeneratedValue( strategy =  GenerationType.IDENTITY) // defines the primary key generate.IDENTITY means the values of the primary key will be generated using auto increment.
+    @Column(name = "studentId")
     private int id;
     @Column(name="studentFirstName", nullable = false, length = 64)
     private String firstName;
     @Column(name = "studentLastName", nullable = false, length = 32)
     private String lastName;
-    @Column(name = "studentEmail",nullable = false, length = 255)
+    @Column(name = "email",nullable = false)
     private String email;
     @Column(name = "studentCourse",nullable = false, length = 32)
     private String course;
     @Column(name = "studentYear",nullable = false,length = 1)
     private int year;
-    @OneToOne(targetEntity = Contact.class, cascade = CascadeType.ALL)
-    private Contact contact;
-    @ManyToMany(targetEntity = Subject.class, cascade = CascadeType.ALL)
-    private Set<Subject> subjects;
+    @Column( name = "instructorId" )
+    private Integer instructorId;
 
-    public Student(String firstName, String lastName, String email, String course, int year, Contact contact, Set<Subject> subject) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.course = course;
-        this.year = year;
-        this.contact = contact;
-        this.subjects = subject;
+    @JsonIgnore
+    @OneToOne(targetEntity = Contact.class,cascade = CascadeType.ALL)
+    @JoinColumn(name="contact_id")
+    private Contact contact;
+
+    @JsonIgnore
+    @ManyToMany(targetEntity = Subject.class,cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinTable(name = "student_enrolled", joinColumns = @JoinColumn(name = "studentId"),
+            inverseJoinColumns = @JoinColumn(name="subjectId") )
+    private Set<Subject> subjects = new HashSet<>();
+
+    public void setStudent(String fname,String lname,String course,int year,String email){
+        this.firstName=fname;
+        this.lastName=lname;
+        this.course=course;
+        this.year=year;
+        this.email=email;
+    }
+
+
+    public void addContactToStudent(Contact contact){this.contact=contact;}
+
+    public int getInstructorId(){
+        return this.instructorId;
+    }
+
+    public void setInstructorId(Integer InstructorId){
+        this.instructorId = InstructorId;
+    }
+
+    public void enrollStud(Subject subject){
+        this.subjects.add(subject);
     }
 }

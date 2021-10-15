@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Table(name = "subject")
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,12 +15,10 @@ import javax.persistence.*;
 @Table(name = "Subject")
 public class Subject {
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue( strategy =  GenerationType.IDENTITY)
+    @Column(name = "subjectId")
     private int id;
-    @Column(name = "subjectName")
+    @Column(name="subjectName", nullable = false, length = 64)
     private String name;
 
-    public Subject(String name) {
-        this.name = name;
-    }
 }

@@ -44,5 +44,16 @@ public class SubjectServiceImpl implements SubjectService{
         }
     }
 
+    @Override
+    public Subject enrollStudent(Integer subjectID, Integer studentID){
+        Subject subject = subjectRepository.findById(subjectID).get();
+        Student student = studentRepository.findById(studentID).get();
+        student.enrollStud(subject);
+        return subjectRepository.save(subject);
+    }
 
+    @Override
+    public List<Subject> getEnrolledSubject(Integer studentID){
+        return subjectRepository.getSubjects(studentID);
+    }
 }

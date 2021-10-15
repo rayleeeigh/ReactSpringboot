@@ -24,8 +24,19 @@ public class InstructorController {
         instructorService.saveInstructor(instructor);
     }
 
-    @DeleteMapping(value = "/instructors/{id}")
-    public void deleteInstructor(@PathVariable Integer id){
-        instructorService.removeInstructorById(id);
+    @PutMapping("/assignInstructor/{instructorId}/student/{studentId}")
+    public Instructor assignStudentToInstructor(@PathVariable Integer instructorId, @PathVariable Integer studentId){
+        return instructorService.assignStudent(instructorId,studentId);
     }
+
+    @PutMapping("/assignInstructor/{instructorId}")
+    public Instructor assignStudentsToInstructor(@PathVariable Integer instructorId, @RequestBody Student student){
+        return instructorService.assignCreatedStudent(instructorId,student);
+    }
+
+    @DeleteMapping("/deleteInstructor/{instructorId}")
+    public String deleteInstructor(@PathVariable Integer instructorId){
+        return instructorService.deleteInstructor(instructorId);
+    }
+
 }

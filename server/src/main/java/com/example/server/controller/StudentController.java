@@ -41,4 +41,34 @@ public class StudentController {
     @PutMapping("/update/{id}")
     public void updateStudent(@PathVariable Integer id, @RequestBody Student student){studentService.updateStudent(id,student);}
 
+    @GetMapping("/viewStudent/{name}")
+    public List<Student> viewStudents(@RequestParam String name){
+        List<Student> student = studentService.searchStudent(name);
+        return student;
+    }
+
+    @PutMapping("/addInstructor/{instructorID}/students/{studentID}")
+    public Student assignInstructorToStudent(
+            @PathVariable int instructorID,
+            @PathVariable int studentID
+    ){
+        System.out.println(instructorID);
+        return studentService.assignInstructor(instructorID,studentID);
+    }
+
+    @PutMapping("/enroll/{subjectID}/students/{studentID}")
+    public Student enrollStudentSubject(
+            @PathVariable int subjectID,
+            @PathVariable int studentID
+    ){
+        return studentService.enrollStudent(subjectID,studentID);
+    }
+
+    @PutMapping("/contact/{contactID}/students/{studentID}")
+    public Contact assignContactStudent(
+            @PathVariable int contactID,
+            @PathVariable int studentID
+    ){
+        return studentService.assignContact(contactID,studentID);
+    }
 }

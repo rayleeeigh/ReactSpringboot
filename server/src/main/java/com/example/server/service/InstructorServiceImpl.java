@@ -1,7 +1,9 @@
 package com.example.server.service;
 
 import com.example.server.model.Instructor;
+import com.example.server.model.Student;
 import com.example.server.repository.InstructorRepository;
+import com.example.server.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,9 @@ import java.util.Optional;
 public class InstructorServiceImpl implements InstructorService {
     @Autowired
     private InstructorRepository instructorRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Override
     public List<Instructor> getAllInstructors(){
@@ -29,34 +34,35 @@ public class InstructorServiceImpl implements InstructorService {
     }
 
     @Override
-    public void saveInstructor(Instructor instructor){
-        Instructor newInstructor = new Instructor();
-        newInstructor.setFirstName(instructor.getFirstName());
-        newInstructor.setLastName(instructor.getLastName());
-        newInstructor.setEmail(instructor.getEmail());
-
-        newInstructor.setStudents(instructor.getStudents());
-        Instructor savedInstructor = instructorRepository.save(newInstructor);
-
-        if(instructorRepository.findById(savedInstructor.getId()).isPresent()){
-            System.out.println("Successful");
-        }else{
-            System.out.println("FAIL");
-        }
+    public Instructor assignStudent(Integer id, Integer studentId){
+        Instructor instructor=instructorRepository.findById(id).get();
+        Student student = studentRepository.findById(studentId).get();
+        student.setInstructorId(id);
+        studentRepository.save(student);
+        instructor.getStudents().add(student);
+        instructorRepository.save(instructor);
+        return instructor;
     }
 
     @Override
-    public void removeInstructorById(Integer id){
-        if(instructorRepository.findById(id).isPresent()){
-            instructorRepository.deleteById(id);
-            if(instructorRepository.findById(id).isPresent()){
-                System.out.print("Failed to delete the specific record");
-            }else{
-                System.out.println("Successfully deleted Instructor!");
-            }
-        }else{
-            System.out.println("No records found");
-        }
+    public Instructor assignCreatedStudent(Integer id, Student student){
+        Instructor instructor=instructorRepository.findById(id).get();
+        student.setInstructorId(id);
+        studentRepository.save(student);
+        instructor.getStudents().add(student);
+        instructorRepository.save(instructor);
+        return instructor;
     }
 
+    @Override
+    public String deleteInstructor(Integer id){
+        List<Student> students = studentRepository.findInstructor(id);
+        for(Student studs:students){
+            studs.setInstructorId(null);
+            studentRepository.save(studs);
+        }
+        instructorRepository.deleteById(id);
+
+        return "Success";
+    }
 }
