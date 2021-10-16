@@ -1,7 +1,6 @@
 package com.example.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 
 import lombok.Data;
@@ -32,8 +31,6 @@ public class Student {
     private String course;
     @Column(name = "year",nullable = false,length = 1)
     private int year;
-    @Column( nullable = true,name = "instructorId" )
-    private Integer instructorId;
 
     @JsonIgnore
     @OneToOne(targetEntity = Contact.class,cascade = CascadeType.ALL)
@@ -46,6 +43,8 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name="subjectId") )
     private Set<Subject> subjects = new HashSet<>();
 
+
+
     public void setStudent(String fname,String lname,String course,int year,String email){
         this.firstName=fname;
         this.lastName=lname;
@@ -57,13 +56,6 @@ public class Student {
 
     public void addContactToStudent(Contact contact){this.contact=contact;}
 
-    public int getInstructorId(){
-        return this.instructorId;
-    }
-
-    public void setInstructorId(Integer InstructorId){
-        this.instructorId = InstructorId;
-    }
 
     public void enrollStud(Subject subject){
         this.subjects.add(subject);

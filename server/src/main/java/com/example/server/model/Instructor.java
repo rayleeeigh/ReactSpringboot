@@ -19,8 +19,8 @@ public class Instructor {
     @GeneratedValue( strategy =  GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany( targetEntity = Student.class,cascade = CascadeType.ALL , orphanRemoval = true)
-    private List<Student>students;
+    @OneToMany( targetEntity = Student.class,cascade = CascadeType.ALL , orphanRemoval = false)
+    private List<Student> students;
 
 
     @Column(name="instructorFirstname", nullable = false, length = 64)
@@ -30,4 +30,7 @@ public class Instructor {
     @Column(name="instructorEmail", nullable = false, length = 64)
     private String email;
 
+    public void removeStudentFromSubject(Student student){
+        students.remove(student);
+    }
 }

@@ -10,4 +10,7 @@ public interface ContactService {
      public List<Contact> getContact();
      public String deleteContact(Integer contactID);
      public Contact updateContact(Contact contact);
+
+     // This Function would get all the contacts from a specific student id//
+     public Contact getContactStudent(Integer studentId);
 }

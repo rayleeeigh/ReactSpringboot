@@ -14,7 +14,9 @@ public class ContactController {
     private ContactService contactService;
 
     @GetMapping("/view")
-    List<Contact> getContacts(){return contactService.getContact();}
+    List<Contact> getContacts(){
+        return contactService.getContact();
+    }
 
     @PostMapping("/add")
     Contact createContact(@RequestBody Contact contact){
@@ -31,5 +33,9 @@ public class ContactController {
         return contactService.updateContact(contact);
     }
 
-
+    // This Function would get all the contacts from a specific student id//
+    @GetMapping("/view/student/{studentId}")
+    public Contact getContactFromStudent(@PathVariable Integer studentId){
+        return contactService.getContactStudent(studentId);
+    }
 }

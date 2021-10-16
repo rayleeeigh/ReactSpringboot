@@ -16,12 +16,13 @@ public interface StudentRepository extends JpaRepository<Student,Integer> {
     @Query("SELECT u FROM Student u ")
     List<Student> getAllUsers();
 
-    @Query(
-            value = "SELECT * FROM Student u INNER JOIN student_enrolled s ON u.id=s.student_id",
-            nativeQuery = true
-    )
-    Student getStudent();
+    @Query(value = "SELECT * FROM Student u INNER JOIN student_enrolled s ON u.student_id=s.student_id AND s.subject_id=:subjectID", nativeQuery = true)
+    List<Student> getStudent(int subjectID);
 
     @Query("SELECT p FROM Student p WHERE p.firstName LIKE %?1%")
     List<Student> search(String keyword);
+
+    @Query(value = "SELECT * FROM Student s INNER JOIN instructor_students u ON u.students_student_id=s.student_id AND u.instructor_id=:instructorId", nativeQuery = true)
+    List<Student> getInstructorStudent(int instructorId);
+
 }

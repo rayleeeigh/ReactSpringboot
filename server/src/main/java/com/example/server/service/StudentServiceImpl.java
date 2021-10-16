@@ -1,6 +1,5 @@
 package com.example.server.service;
 
-import com.example.server.exception.ContactExistException;
 import com.example.server.model.Contact;
 import com.example.server.model.Instructor;
 import com.example.server.model.Student;
@@ -11,6 +10,7 @@ import com.example.server.repository.StudentRepository;
 import com.example.server.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +28,7 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private SubjectRepository subjectRepository;
 
-
-    private int flag=0;
+    private boolean Contactflag;
 
     @Override
     public Student saveStudent(Student student) {
@@ -48,12 +47,13 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return studentRepository.getAllUsers();
     }
 
     @Override
     public void removeStudent(Integer id) {
         studentRepository.deleteById(id);
+
     }
 
     @Override
@@ -89,10 +89,10 @@ public class StudentServiceImpl implements StudentService {
     public Student assignInstructor(Integer instructorID, Integer studentID){
         Student student = studentRepository.findById(studentID).get();
         Instructor instructor = instructorRepository.findById(instructorID).get();
-        student.setInstructorId(instructorID);
+//        student.setInstructorId(instructorID);
         instructor.getStudents().add(student);
-        studentRepository.save(student);
-
+//        studentRepository.save(student);
+        instructorRepository.save(instructor);
         return student;
     }
 
@@ -114,18 +114,16 @@ public class StudentServiceImpl implements StudentService {
 
         List<Student> studs= studentRepository.findAll();
         for(Student st : studs){
-//            System.out.println(st.getContact().getContact_id());
             if(st.getContact()==null){
-                flag=0;
+                Contactflag=false;
             }else if(st.getContact().getId() == contactID){
-                flag=1;
+                Contactflag=true;
                 break;
             }else{
-                flag=0;
+                Contactflag=false;
             }
         }
-
-        if(flag==0){
+        if(Contactflag==false){
             student.setContact(contact);
             contact.setStudentId(studentID);
             contactRepository.save(contact);
@@ -133,5 +131,34 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return contact;
+    }
+
+    @Override
+    public List<Student> getAllStudentsFromSubject(Integer subjectID){
+        return studentRepository.getStudent(subjectID);
+    }
+
+    @Override
+    public String removeSubjectFromStuds(Integer subjectID,Integer studentID){
+        Subject subject = subjectRepository.findById(subjectID).get();
+        Student student = studentRepository.findById(studentID).get();
+
+        student.getSubjects().remove(subject);
+        studentRepository.save(student);
+        return "Success";
+
+    }
+
+    @Override
+    public String removeContactFromStudent(Integer contactID, Integer studentID){
+        Contact contact = contactRepository.findById(contactID).get();
+        Student student = studentRepository.findById(studentID).get();
+
+        student.setContact(null);
+        contact.setStudentId(null);
+        studentRepository.save(student);
+        contactRepository.save(contact);
+
+        return "Success";
     }
 }

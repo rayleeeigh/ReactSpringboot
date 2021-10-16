@@ -37,7 +37,9 @@ public class StudentController {
     }
 
     @PutMapping("/update/{id}")//or @RequestMapping(method = RequestMethod.PUT) used for mapping our HTTP request "update/{id}" onto updateStudent() handler method.
-    public void update(@PathVariable Integer id, @RequestBody Student student){studentService.updateStudent(id,student);}
+    public void update(@PathVariable Integer id, @RequestBody Student student){
+        studentService.updateStudent(id,student);
+    }
 
     @GetMapping("/viewStudent/{name}")
     public List<Student> viewStudents(@RequestParam String name){
@@ -62,11 +64,30 @@ public class StudentController {
         return studentService.enrollStudent(subjectID,studentID);
     }
 
+    //this function will assign an existing contact for a student//
     @PutMapping("/contact/{contactID}/students/{studentID}")
     public Contact assignContactStudent(
             @PathVariable int contactID,
             @PathVariable int studentID
     ){
         return studentService.assignContact(contactID,studentID);
+    }
+
+    //this function will get all the students from a specific subject//
+    @GetMapping("/view/subject/{subjectID}")
+    public List<Student> getAllStudents(@PathVariable int subjectID){
+        return studentService.getAllStudentsFromSubject(subjectID);
+    }
+
+    //this function will remove a subject from the student's list of subjects//
+    @PutMapping("/student/{studentID}/deletedSubject/{subjectID}")
+    public String deleteSubjectFromStudent(@PathVariable int studentID, @PathVariable int subjectID){
+        return studentService.removeSubjectFromStuds(subjectID,studentID);
+    }
+
+    //this function will remove a contact from a student//
+    @PutMapping("/deleteContact/{contactID}/students/{studentID}")
+    public String deleteContactFromStudent(@PathVariable int contactID, @PathVariable int studentID){
+        return studentService.removeContactFromStudent(contactID,studentID);
     }
 }

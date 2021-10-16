@@ -10,5 +10,10 @@ public interface SubjectService {
     public List<Subject> getAllSubjects();
     public void removeSubject(Integer id);
     public Subject updateSubject(Integer id,Subject subject);
+
+    //this function will enroll the student to a subject.//
     public Subject enrollStudent(Integer subjectID, Integer studentID);
+
+    //this function will find all subjects from a specific student//
+    public List<Subject> findAllSubjectFromStudent(Integer studentID);
 }

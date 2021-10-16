@@ -37,8 +37,6 @@ public class InstructorServiceImpl implements InstructorService{
     public Instructor assignStudent(Integer id, Integer studentId){
         Instructor instructor=instructorRepository.findById(id).get();
         Student student = studentRepository.findById(studentId).get();
-        student.setInstructorId(id);
-        studentRepository.save(student);
         instructor.getStudents().add(student);
         instructorRepository.save(instructor);
         return instructor;
@@ -47,10 +45,18 @@ public class InstructorServiceImpl implements InstructorService{
     @Override
     public Instructor assignCreatedStudent(Integer id, Student student){
         Instructor instructor=instructorRepository.findById(id).get();
-        student.setInstructorId(id);
-        studentRepository.save(student);
         instructor.getStudents().add(student);
         instructorRepository.save(instructor);
         return instructor;
+    }
+
+    @Override
+    public String deleteInstructorFromStudents(Integer instructorID, Integer studentID){
+        Instructor instructor = instructorRepository.findById(instructorID).get();
+        Student student = studentRepository.findById(studentID).get();
+
+        instructor.removeStudentFromSubject(student);
+        instructorRepository.save(instructor);
+        return "Success";
     }
 }

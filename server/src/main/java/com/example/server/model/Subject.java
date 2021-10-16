@@ -14,10 +14,12 @@ import javax.persistence.*;
 @Entity
 public class Subject {
     @Id
-    @GeneratedValue( strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subjectId")
     private int id;
-    @Column(name="subjectName", nullable = false, length = 64)
+    @Column(name = "subjectName", nullable = false, length = 64)
     private String name;
+
+
 
 }

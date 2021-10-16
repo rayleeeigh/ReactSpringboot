@@ -31,15 +31,21 @@ public class InstructorController {
         return instructor;
     }
 
+    //this function will assign an existing student to an existing instructor.//
     @PutMapping("/assignInstructor/{instructorId}/student/{studentId}")
     public Instructor assignStudentToInstructor(@PathVariable Integer instructorId, @PathVariable Integer studentId){
         return instructorService.assignStudent(instructorId,studentId);
     }
 
+    //this function will assign a newly created student to an instructor.//
     @PutMapping("/assignInstructor/{instructorId}")
     public Instructor assignStudentsToInstructor(@PathVariable Integer instructorId, @RequestBody Student student){
         return instructorService.assignCreatedStudent(instructorId,student);
     }
 
-
+    //this function will remove the assigned instructor from the student//
+    @PutMapping("/deleteInstructor/{instructorId}/student/{studentId}")
+    public String deleteInstructor(@PathVariable Integer instructorId,@PathVariable Integer studentId){
+        return instructorService.deleteInstructorFromStudents(instructorId,studentId);
+    }
 }

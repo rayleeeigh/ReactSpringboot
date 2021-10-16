@@ -25,11 +25,18 @@ public class SubjectController {
         return subjectService.getAllSubjects();
     }
 
+    //this function will enroll the student to a subject.//
     @PutMapping("/enroll/{subjectID}/students/{studentID}")
     public Subject enrollStudentSubject(
             @PathVariable int subjectID,
             @PathVariable int studentID
     ){
         return subjectService.enrollStudent(subjectID,studentID);
+    }
+
+    //this function will find all subjects from a specific student//
+    @GetMapping("/allSubjects/student/{studentID}")
+    public List<Subject> getAllSubjectsFromStudent(@PathVariable int studentID){
+        return subjectService.findAllSubjectFromStudent(studentID);
     }
 }

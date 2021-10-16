@@ -50,5 +50,8 @@ public class SubjectServiceImpl implements SubjectService{
         return subjectRepository.save(subject);
     }
 
-
+    @Override
+    public List<Subject> findAllSubjectFromStudent(Integer studentID){
+        return subjectRepository.getSubjects(studentID);
+    }
 }

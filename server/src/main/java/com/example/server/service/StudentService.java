@@ -17,5 +17,18 @@ public interface StudentService {
     public Student addContact(Integer contactID,Integer studentID);
     public Student assignInstructor(Integer instructorID, Integer studentID);
     public Student enrollStudent(Integer subjectID, Integer studentID);
+
+    //this function will assign an existing contact for a student//
     Contact assignContact(Integer contactID, Integer studentID);
+
+    //this function will get all the students from a specific subject//
+    public List<Student> getAllStudentsFromSubject(Integer subjectID);
+
+    //this function will remove a subject from the student's list of subjects//
+    public String removeSubjectFromStuds(Integer subjectID, Integer studentID);
+
+    //this function will remove a contact from a student//
+    public String removeContactFromStudent(Integer contactID, Integer studentID);
+
+
 }
