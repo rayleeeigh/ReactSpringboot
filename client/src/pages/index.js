@@ -37,6 +37,7 @@ export default function Index() {
   const [updateCourse, setUpdateCourse] = useState("");
   const [updateYear, setUpdateYear] = useState(0);
   const [updateEmail, setUpdateEmail] = useState("");
+  const [student,setStudent]=useState({});
 
   //Instructor
   const [instructorfirstname, setInstructorFirstName] = useState("");
@@ -55,6 +56,9 @@ export default function Index() {
     year: "",
     email: "",
   });
+
+  //Subject
+  const [subjectname, setSubjectName] = useState("");
 
   //Checkboxes
   const [studentCheck,setStudentCheck]=useState(true);
@@ -77,7 +81,7 @@ export default function Index() {
       instructor_id: null
     };
 
-    axios.put("http://localhost:8080/student/enrollStudent/"+instructor,student).then(() => {
+    axios.put("http://localhost:8080/instructor/assignInstructor/"+instructor,student).then(() => {
       toast({
         title: "Student Add",
         description: "Added Student Successfully!",
@@ -118,8 +122,8 @@ export default function Index() {
       course,
       year,
     };
-    student.first_name = updateFirstName;
-    student.last_name = updateLastName;
+    student.firstName = updateFirstName;
+    student.lastName = updateLastName;
     student.email = updateEmail;
     student.course = updateCourse;
     student.year = updateYear;
@@ -149,9 +153,9 @@ export default function Index() {
   const addInstructor = (e) => {
     e.preventDefault();
     const instructorr = {
-      instructor_first_name: instructorfirstname,
-      instructor_last_name: instructorlastname,
-      instructor_email:instructoremail
+      firstName: instructorfirstname,
+      lastName: instructorlastname,
+      email:instructoremail
     };
 
     axios.post("http://localhost:8080/instructor/add",instructorr).then(() => {
@@ -169,9 +173,53 @@ export default function Index() {
       onInstructorClose();
     });
   };
+
   //Subject CRUD
-  function subjectOpen(){
+  function subjectOpen(studentID){
     onSubjectOpen();
+    axios.get("http://localhost:8080/student/view/"+studentID).then((response) => {
+      setStudent(response.data);
+    });
+    axios.get("http://localhost:8080/subject/view").then((response) => {
+        setSubjects(response.data);
+    });
+  }
+  const addSubject = (e) => {
+    e.preventDefault();
+    const subjectt = {
+      name: subjectname
+    };
+
+    axios.post("http://localhost:8080/subject/add",subjectt).then(() => {
+      toast({
+        title: "Subject Add",
+        description: "Added Subject Successfully!",
+        position: "top",
+        status: "success",
+        duration: "5000",
+        isClosable: "false",
+      });
+      axios.get("http://localhost:8080/subject/view").then((response) => {
+        setSubjects(response.data);
+      });
+      onAddSubjectClose();
+    });
+  };
+  function addSubjectToStudent(subjectID,studentID){
+    axios.put("http://localhost:8080/subject/enroll/"+subjectID+"/students/"+studentID).then(() => {
+      toast({
+        title: "Subject Add",
+        description: "Added Subject Successfully!",
+        position: "top",
+        status: "success",
+        duration: "5000",
+        isClosable: "false",
+      });
+      axios.get("http://localhost:8080/student/view").then((response) => {
+        setStudents(response.data);
+      });
+      onSubjectClose();
+    });
   }
 
 
@@ -257,6 +305,12 @@ export default function Index() {
     isOpen: isSubjectOpen,
     onOpen: onSubjectOpen,
     onClose: onSubjectClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isAddSubjectOpen,
+    onOpen: onAddSubjectOpen,
+    onClose: onAddSubjectClose,
   } = useDisclosure();
 
 
@@ -416,7 +470,7 @@ export default function Index() {
               </FormControl>
               <Select placeholder="Select Instructor" onChange={(e) => setInstructor(e.target.value)}>
               {instructors.map((instructor) => (
-                <option key={instructor.id} value={instructor.instructor_id}>{instructor.instructor_first_name} {instructor.instructor_last_name}</option>
+                <option key={instructor.id} value={instructor.id}>{instructor.firstName} {instructor.lastName}</option>
               ))}
               </Select>
             </Stack>
@@ -526,11 +580,11 @@ export default function Index() {
               my={10}
             >
               <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
-                Student's Subjects
+                {student.firstName}'s Subjects
               </Heading>
               {subjects.map((subject) => (
               <Stack mt={8} direction={"row"} spacing={4}>
-                <Text>{subject.subject_name}</Text>
+                <Text>{subject.name}</Text>
                 <Spacer/>
                 <Button
                   bg={"green.400"}
@@ -538,6 +592,7 @@ export default function Index() {
                   _hover={{
                     bg: "blue.500",
                   }}
+                  onClick={()=>addSubjectToStudent(subject.id,student.id)}
                 >
                   Add
                 </Button>
@@ -554,6 +609,59 @@ export default function Index() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <Button onClick={onAddSubjectOpen}>Add Subject</Button>
+
+      <Modal isOpen={isAddSubjectOpen} onClose={onAddSubjectClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add Subjects</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          <Stack
+              spacing={3}
+              w={"full"}
+              maxW={"md"}
+              bg="gray.300"
+              rounded={"xl"}
+              boxShadow={"lg"}
+              p={6}
+              my={10}
+            >
+              <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
+                Add Subject
+              </Heading>
+              <Text fontSize={{ base: "sm", sm: "md" }}>Subject Name</Text>
+              <FormControl>
+                <Input
+                  placeholder="Subject Name"
+                  type="text"
+                  value={subjectname}
+                  onChange={(e) => setSubjectName(e.target.value)}
+                />
+              </FormControl>
+            </Stack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onAddSubjectClose}>
+              Close
+            </Button>
+            <Button
+                  bg={"green.400"}
+                  color={"white"}
+                  _hover={{
+                    bg: "blue.500",
+                  }}
+                  onClick={addSubject}
+                >
+                  Add
+                </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      
       
       <Center>
       <Flex display="block" align={"center"} justify={"center"} bg="gray.500">
@@ -678,7 +786,7 @@ export default function Index() {
                   _focus={{
                     bg: "blue.500",
                   }}
-                  onClick={subjectOpen}
+                  onClick={()=>subjectOpen(student.id)}
                 >
                   Add subjects
                 </Button>
@@ -702,7 +810,7 @@ export default function Index() {
               p={6}
               textAlign={"center"}
               display="inline-block"
-              key={instructor.instructor_id}
+              key={instructor.id}
             >
               <Avatar
                 size={"xl"}
@@ -722,10 +830,10 @@ export default function Index() {
                 }}
               />
               <Heading fontSize={"2xl"} fontFamily={"body"}>
-                {instructor.instructor_first_name} {instructor.instructor_last_name}
+                {instructor.firstName} {instructor.lastName}
               </Heading>
               <Text textAlign={"center"} px={3}>
-                Email: {instructor.instructor_email}
+                Email: {instructor.email}
               </Text>
 
               <Stack mt={8} direction={"row"} spacing={4}>
@@ -792,7 +900,7 @@ export default function Index() {
                 }}
               />
               <Heading fontSize={"2xl"} fontFamily={"body"}>
-                {subject.subject_name}
+                {subject.name}
               </Heading>
 
               <Stack mt={8} direction={"row"} spacing={4}>
