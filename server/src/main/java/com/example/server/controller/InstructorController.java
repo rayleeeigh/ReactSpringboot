@@ -21,7 +21,7 @@ public class InstructorController {
     }
 
     @GetMapping("/view")
-    public List<Instructor> getAllInstructors(){
+    public List<Instructor> getAllInstructorsDB(){
         return instructorService.getAllInstructors();
     }
 
