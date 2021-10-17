@@ -52,6 +52,21 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void removeStudent(Integer id) {
+        Student student = studentRepository.findById(id).get();
+        if(student.getContact()!=null){
+            Contact contact = contactRepository.findById(student.getContact().getId()).get();
+            contact.setStudentId(null);
+            contactRepository.save(contact);
+        }
+        List<Instructor> instructors = instructorRepository.findAll();
+        for(Instructor instructor:instructors){
+            if(instructor.getStudents().contains(student)){
+                instructor.getStudents().remove(student);
+                instructorRepository.save(instructor);
+            }
+        }
+        student.setSubjects(null);
+        studentRepository.save(student);
         studentRepository.deleteById(id);
 
     }

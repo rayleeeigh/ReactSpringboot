@@ -10,6 +10,7 @@ public interface InstructorService {
     public Instructor saveInstructor(Instructor instructor);
     public List<Instructor> getAllInstructors();
     Optional<Instructor> findById(Integer id);
+    public String deleteInstructor(Integer instructorID);
 
     //this function will assign an existing student to an existing instructor.//
     public Instructor assignStudent(Integer id, Integer studentId);

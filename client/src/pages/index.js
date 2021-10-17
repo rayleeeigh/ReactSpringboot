@@ -197,9 +197,11 @@ export default function Index() {
       .then((response) => {
         setStudent(response.data);
       });
-    axios.get("http://localhost:8080/subject/view").then((response) => {
-      setSubjects(response.data);
-    });
+    axios
+      .get("http://localhost:8080/subject/allNotSubjects/student/" + studentID)
+      .then((response) => {
+        setSubjects(response.data);
+      });
   }
 
   const addSubject = (e) => {
@@ -875,7 +877,7 @@ export default function Index() {
                   my={10}
                 >
                   <Heading lineHeight={1} fontSize={{ base: "2xl", md: "3xl" }}>
-                    Add Subject
+                    All Subject
                   </Heading>
                   {subjectView.map((subject) => (
                     <Stack mt={8} direction={"row"} spacing={4}>

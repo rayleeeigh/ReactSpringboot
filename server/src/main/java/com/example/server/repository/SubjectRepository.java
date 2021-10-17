@@ -9,4 +9,7 @@ import java.util.List;
 public interface SubjectRepository extends JpaRepository<Subject,Integer> {
     @Query(value = "SELECT * FROM Subject u INNER JOIN student_enrolled s ON u.subject_id=s.subject_id AND s.student_id=:studentId ", nativeQuery = true)
     List<Subject> getSubjects(int studentId);
+
+    @Query(value = "SELECT * FROM Subject u FULL OUTER JOIN student_enrolled s ON u.subject_id=s.subject_id AND s.student_id=:studentId ", nativeQuery = true)
+    List<Subject> getNotSubjects(int studentId);
 }
