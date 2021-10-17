@@ -25,6 +25,11 @@ public class InstructorController {
         return instructorService.getAllInstructors();
     }
 
+    @DeleteMapping("/delete/{instructorID}")
+    public String deleteInstructorDB(@PathVariable Integer instructorID){
+        return instructorService.deleteInstructor(instructorID);
+    }
+
     @GetMapping("/view/{id}")
     public Instructor getInstructorById(@PathVariable("id") Integer id){
         Instructor instructor = instructorService.findById(id).orElseThrow(()->new InstructorNotFoundException("Instructor with "+id+" is not found!"));

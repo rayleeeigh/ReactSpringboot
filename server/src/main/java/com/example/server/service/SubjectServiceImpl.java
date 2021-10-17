@@ -7,7 +7,9 @@ import com.example.server.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SubjectServiceImpl implements SubjectService{
@@ -34,6 +36,13 @@ public class SubjectServiceImpl implements SubjectService{
 
     @Override
     public void removeSubject(Integer id) {
+        Subject subject = subjectRepository.findById(id).get();
+        List<Student> students = studentRepository.findAll();
+        for(Student stud:students){
+            if(stud.getSubjects().contains(subject)){
+                stud.getSubjects().remove(subject);
+            }
+        }
         subjectRepository.deleteById(id);
     }
 
@@ -53,5 +62,18 @@ public class SubjectServiceImpl implements SubjectService{
     @Override
     public List<Subject> findAllSubjectFromStudent(Integer studentID){
         return subjectRepository.getSubjects(studentID);
+    }
+
+    @Override
+    public List<Subject> findAllNotSubjectFromStudent(Integer studentID){
+        List<Subject> subjects=subjectRepository.findAll();
+        List<Subject> subjects1 = new ArrayList<>();
+        Student student = studentRepository.findById(studentID).get();
+        for (Subject sub:subjects){
+            if(!student.getSubjects().contains(sub)){
+                subjects1.add(sub);
+            }
+        }
+        return subjects1;
     }
 }

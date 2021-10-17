@@ -34,6 +34,15 @@ public class InstructorServiceImpl implements InstructorService{
     }
 
     @Override
+    public String deleteInstructor(Integer instructorID){
+        Instructor instructor = instructorRepository.findById(instructorID).get();
+        instructor.setStudents(null);
+        instructorRepository.save(instructor);
+        instructorRepository.deleteById(instructorID);
+        return "Success";
+    }
+
+    @Override
     public Instructor assignStudent(Integer id, Integer studentId){
         Instructor instructor=instructorRepository.findById(id).get();
         Student student = studentRepository.findById(studentId).get();
