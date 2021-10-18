@@ -12,8 +12,6 @@ This project is for practice and activity submission to Fullspeed Technologies I
 #### $ npm start<br>
 
 ### For server (ExpressJS)
-#### $ cd server<br>
-#### $ npm install<br>
-#### $ npm run start<br><br>
+#### Open server folder via IntelliJ then run<br>
 
 Comments and critiques are welcome. We are aiming to be better each day. 
