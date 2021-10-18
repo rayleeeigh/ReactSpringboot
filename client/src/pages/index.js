@@ -45,6 +45,8 @@ export default function Index() {
   const [updateYear, setUpdateYear] = useState(0);
   const [updateEmail, setUpdateEmail] = useState("");
   const [student, setStudent] = useState({});
+  const [studentID, setStudentID] = useState(null);
+  const [editstudent, setEditStudent] = useState({});
 
   //Instructor
   const [instructorfirstname, setInstructorFirstName] = useState("");
@@ -55,14 +57,7 @@ export default function Index() {
   const [instructors, setInstructors] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [instructorid, setInstructorID] = useState(null);
-  const [estuds, setEStuds] = useState({
-    id: "",
-    first_name: "",
-    last_name: "",
-    course: "",
-    year: "",
-    email: "",
-  });
+  const [estuds, setEStuds] = useState({});
 
   //Contact
   const [contactAddress, setContactAddress] = useState("");
@@ -97,17 +92,13 @@ export default function Index() {
       instructor_id: null,
       contact_id: null,
     };
-    const cid = contact.id;
 
     axios
       .put(
-        "http://localhost:8080/instructor/assignInstructor/" +
-          instructorid +
-          "/assignContact/" +
-          cid,
+        "http://localhost:8080/instructor/assignInstructor/" + instructorid,
         student
       )
-      .then(() => {
+      .then((response) => {
         toast({
           title: "Student Add",
           description: "Added Student Successfully!",
@@ -116,6 +107,7 @@ export default function Index() {
           duration: "5000",
           isClosable: "false",
         });
+
         axios.get("http://localhost:8080/student/view").then((response) => {
           setStudents(response.data);
         });
@@ -139,6 +131,11 @@ export default function Index() {
       onClose();
     });
   };
+
+  function editStudent(student) {
+    setEStuds(student);
+    onEditOpen();
+  }
 
   const updateStudent = (id) => {
     const student = {
@@ -168,11 +165,6 @@ export default function Index() {
         });
         onClose();
       });
-  };
-
-  const editStudent = (student) => {
-    setEStuds(student);
-    onEditOpen();
   };
 
   //Instructor CRUD
@@ -284,18 +276,19 @@ export default function Index() {
   }
 
   //Contact CRUD
-  const addContact = (e) => {
-    e.preventDefault();
+  function addContact() {
     const contactt = {
       firstname: contactFirstname,
       lastName: contactLastname,
       number: contactNumber,
       address: contactAddress,
+      studentId: studentID,
     };
 
     axios
       .post("http://localhost:8080/contact/add", contactt)
       .then((response) => {
+        assignContactToStudent(response.data.id, studentID);
         toast({
           title: "Contact Add",
           description: "Added Contact Successfully!",
@@ -304,15 +297,26 @@ export default function Index() {
           duration: "5000",
           isClosable: "false",
         });
-        setContact(response.data);
         axios.get("http://localhost:8080/contact/view").then((response) => {
           setContacts(response.data);
         });
-        onContactClose();
       });
-  };
 
-  const deleteContact = (id) => {
+    onContactClose();
+  }
+
+  function assignContactToStudent(contact, studentID) {
+    axios
+      .put(
+        "http://localhost:8080/student/contact/" +
+          contact +
+          "/students/" +
+          studentID
+      )
+      .then(() => {});
+  }
+
+  function deleteContact(id) {
     axios.delete("http://localhost:8080/contact/delete/" + id).then(() => {
       toast({
         title: "Contact Delete",
@@ -327,7 +331,36 @@ export default function Index() {
       });
       onClose();
     });
-  };
+  }
+
+  function removeContactFromStudent(student) {
+    axios
+      .get("http://localhost:8080/contact/view/student/" + student.id)
+      .then((response) => {
+        axios
+          .put(
+            "http://localhost:8080/student/deleteContact/" +
+              response.data.id +
+              "/students/" +
+              student.id
+          )
+          .then(() => {
+            toast({
+              title: "Contact Remove",
+              description: "Contact removed successfully",
+              position: "top",
+              status: "success",
+              duration: 5000,
+              isClosable: false,
+            });
+            deleteContact(response.data.id);
+            axios.get("http://localhost:8080/contact/view").then((response) => {
+              setContacts(response.data);
+            });
+            onEditClose();
+          });
+      });
+  }
 
   //View Functions
   function viewStudents() {
@@ -518,6 +551,17 @@ export default function Index() {
                       onChange={(e) => setUpdateEmail(e.target.value)}
                     />
                   </FormControl>
+                  <Button
+                    bg={"red.500"}
+                    color={"black"}
+                    shadow="2xl"
+                    _hover={{
+                      bg: "red.700",
+                    }}
+                    onClick={() => removeContactFromStudent(estuds)}
+                  >
+                    Remove Contact Details
+                  </Button>
                 </Stack>
               </ModalBody>
               <ModalFooter>
@@ -617,19 +661,6 @@ export default function Index() {
                       </option>
                     ))}
                   </Select>
-                  <Text fontSize={{ base: "sm", sm: "md" }}>
-                    Contact Details
-                  </Text>
-                  <Button
-                    bg={"green.400"}
-                    color={"white"}
-                    _hover={{
-                      bg: "blue.500",
-                    }}
-                    onClick={onContactOpen}
-                  >
-                    Click here to add contact details
-                  </Button>
                 </Stack>
               </ModalBody>
 
@@ -884,6 +915,17 @@ export default function Index() {
                       onChange={(e) => setContactNumber(e.target.value)}
                     />
                   </FormControl>
+                  <Text fontSize={{ base: "sm", sm: "md" }}>Student</Text>
+                  <Select
+                    placeholder="Select Student"
+                    onChange={(e) => setStudentID(e.target.value)}
+                  >
+                    {students.map((student) => (
+                      <option key={student.id} value={student.id}>
+                        {student.firstName} {student.lastName}
+                      </option>
+                    ))}
+                  </Select>
                 </Stack>
               </ModalBody>
 
@@ -897,7 +939,7 @@ export default function Index() {
                   _hover={{
                     bg: "blue.500",
                   }}
-                  onClick={addContact}
+                  onClick={() => addContact()}
                 >
                   Add
                 </Button>
@@ -1010,7 +1052,7 @@ export default function Index() {
             <TabPanels>
               <TabPanel w="full">
                 <Grid
-                  templateColumns="repeat(5,1fr)"
+                  templateColumns="repeat(4,1fr)"
                   gap={4}
                   paddingBottom="20px"
                 >

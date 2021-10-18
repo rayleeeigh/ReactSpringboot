@@ -1,17 +1,18 @@
 package com.example.server.service;
 
-import com.example.server.model.Contact;
 import com.example.server.model.Instructor;
 import com.example.server.model.Student;
-import com.example.server.repository.ContactRepository;
 import com.example.server.repository.InstructorRepository;
 import com.example.server.repository.StudentRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Service
 public class InstructorServiceImpl implements InstructorService{
     @Autowired
@@ -20,8 +21,6 @@ public class InstructorServiceImpl implements InstructorService{
     @Autowired
     private StudentRepository studentRepository;
 
-    @Autowired
-    private ContactRepository contactRepository;
 
     @Override
     public Instructor saveInstructor(Instructor instructor) {
@@ -57,12 +56,9 @@ public class InstructorServiceImpl implements InstructorService{
     }
 
     @Override
-    public Instructor assignCreatedStudent(Integer id,Integer contactId, Student student){
+    public Instructor assignCreatedStudent(Integer id, Student student){
         Instructor instructor=instructorRepository.findById(id).get();
-        Contact contact = contactRepository.findById(contactId).get();
         instructor.getStudents().add(student);
-        student.setContact(contact);
-        contact.setStudentId(student.getId());
         instructorRepository.save(instructor);
         return instructor;
     }
@@ -76,4 +72,5 @@ public class InstructorServiceImpl implements InstructorService{
         instructorRepository.save(instructor);
         return "Success";
     }
+
 }

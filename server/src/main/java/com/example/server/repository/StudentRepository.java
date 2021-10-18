@@ -1,9 +1,6 @@
 package com.example.server.repository;
 
 import com.example.server.model.Student;
-import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaQuery;
-import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
