@@ -16,4 +16,7 @@ public interface SubjectService {
 
     //this function will find all subjects from a specific student//
     public List<Subject> findAllSubjectFromStudent(Integer studentID);
+
+    //this function will find all subjects that have not yet been enrolled by a student//
+    public List<Subject> findAllNotSubjectFromStudent(Integer studentID);
 }

@@ -39,4 +39,10 @@ public class SubjectController {
     public List<Subject> getAllSubjectsFromStudent(@PathVariable int studentID){
         return subjectService.findAllSubjectFromStudent(studentID);
     }
+
+    //this function will find all subjects that have not yet been enrolled by a student//
+    @GetMapping("/allNotSubjects/student/{studentID}")
+    public List<Subject> getAllNotSubjectsFromStudent(@PathVariable int studentID){
+        return subjectService.findAllNotSubjectFromStudent(studentID);
+    }
 }

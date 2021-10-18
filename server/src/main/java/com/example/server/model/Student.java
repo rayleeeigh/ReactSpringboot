@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "Student") // used to specify more details about the table associated to the class.
 
@@ -41,7 +41,7 @@ public class Student {
     @ManyToMany(targetEntity = Subject.class,cascade = CascadeType.ALL)
     @JoinTable(name = "student_enrolled", joinColumns = @JoinColumn(name = "studentId"),
             inverseJoinColumns = @JoinColumn(name="subjectId") )
-    private Set<Subject> subjects = new HashSet<>();
+    private List<Subject> subjects = new ArrayList<>();
 
 
 
