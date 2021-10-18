@@ -75,4 +75,8 @@ public class SubjectServiceImpl implements SubjectService{
         }
         return subjects1;
     }
+
+    public List<Subject> searchSubject(String name){
+        return subjectRepository.searchSubjects(name);
+    }
 }
