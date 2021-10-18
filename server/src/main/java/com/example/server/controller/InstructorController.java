@@ -54,4 +54,10 @@ public class InstructorController {
     public String deleteInstructor(@PathVariable Integer instructorId,@PathVariable Integer studentId){
         return instructorService.deleteInstructorFromStudents(instructorId,studentId);
     }
+
+    @GetMapping("/viewInstructor/{name}")
+    public List<Instructor> viewInstructor(@RequestParam String name){
+        List<Instructor> instructors = instructorService.searchInstructor(name);
+        return instructors;
+    }
 }

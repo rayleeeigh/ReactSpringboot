@@ -11,6 +11,7 @@ public interface InstructorService {
     public List<Instructor> getAllInstructors();
     Optional<Instructor> findById(Integer id);
     public String deleteInstructor(Integer instructorID);
+    public List<Instructor> searchInstructor(String name);
 
     //this function will assign an existing student to an existing instructor.//
     public Instructor assignStudent(Integer id, Integer studentId);

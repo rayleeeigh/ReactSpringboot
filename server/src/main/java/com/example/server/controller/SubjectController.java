@@ -1,5 +1,6 @@
 package com.example.server.controller;
 
+import com.example.server.model.Instructor;
 import com.example.server.model.Subject;
 import com.example.server.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,11 @@ public class SubjectController {
     @GetMapping("/allNotSubjects/student/{studentID}")
     public List<Subject> getAllNotSubjectsFromStudent(@PathVariable int studentID){
         return subjectService.findAllNotSubjectFromStudent(studentID);
+    }
+
+    @GetMapping("/viewSubject/{name}")
+    public List<Subject> viewSubject(@RequestParam String name){
+        List<Subject> subjects = subjectService.searchSubject(name);
+        return subjects;
     }
 }

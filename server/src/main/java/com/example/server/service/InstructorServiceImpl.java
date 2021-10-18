@@ -73,4 +73,8 @@ public class InstructorServiceImpl implements InstructorService{
         return "Success";
     }
 
+    public List<Instructor> searchInstructor(String name){
+        return instructorRepository.searchInstructors(name);
+    }
+
 }
