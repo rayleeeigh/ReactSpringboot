@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/instructor")
 @CrossOrigin
 public class InstructorController {
+
     @Autowired
     private InstructorService instructorService;
 

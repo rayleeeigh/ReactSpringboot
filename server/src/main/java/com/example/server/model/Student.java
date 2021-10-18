@@ -60,4 +60,6 @@ public class Student {
     public void enrollStud(Subject subject){
         this.subjects.add(subject);
     }
+
+
 }

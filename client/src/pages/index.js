@@ -22,11 +22,11 @@ import {
   Center,
   Spacer,
   Grid,
-  Tabs, 
-  TabList, 
-  Tab, 
+  Tabs,
+  TabList,
+  Tab,
   TabPanel,
-  TabPanels
+  TabPanels,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -90,10 +90,14 @@ export default function Index() {
       course: course,
       year: year,
       instructor_id: null,
-      contact_id: null
+      contact_id: null,
     };
 
-    axios.put("http://localhost:8080/instructor/assignInstructor/"+instructorid, student)
+    axios
+      .put(
+        "http://localhost:8080/instructor/assignInstructor/" + instructorid,
+        student
+      )
       .then((response) => {
         toast({
           title: "Student Add",
@@ -128,7 +132,7 @@ export default function Index() {
     });
   };
 
-  function editStudent(student){
+  function editStudent(student) {
     setEStuds(student);
     onEditOpen();
   }
@@ -272,40 +276,47 @@ export default function Index() {
   }
 
   //Contact CRUD
-  function addContact(){
-    const contactt={
+  function addContact() {
+    const contactt = {
       firstname: contactFirstname,
       lastName: contactLastname,
       number: contactNumber,
       address: contactAddress,
-      studentId: studentID
-    }
+      studentId: studentID,
+    };
 
-    axios.post("http://localhost:8080/contact/add", contactt).then((response) => {
-      assignContactToStudent(response.data.id,studentID);
-      toast({
-        title: "Contact Add",
-        description: "Added Contact Successfully!",
-        position: "top",
-        status: "success",
-        duration: "5000",
-        isClosable: "false",
-      }
-      );
-      axios.get("http://localhost:8080/contact/view").then((response) => {
-        setContacts(response.data);
+    axios
+      .post("http://localhost:8080/contact/add", contactt)
+      .then((response) => {
+        assignContactToStudent(response.data.id, studentID);
+        toast({
+          title: "Contact Add",
+          description: "Added Contact Successfully!",
+          position: "top",
+          status: "success",
+          duration: "5000",
+          isClosable: "false",
+        });
+        axios.get("http://localhost:8080/contact/view").then((response) => {
+          setContacts(response.data);
+        });
       });
-    });
 
     onContactClose();
-  };
-
-  function assignContactToStudent(contact,studentID){
-    axios.put("http://localhost:8080/student/contact/"+contact+"/students/"+studentID).then(() => {
-      });
   }
 
-  function deleteContact (id) {
+  function assignContactToStudent(contact, studentID) {
+    axios
+      .put(
+        "http://localhost:8080/student/contact/" +
+          contact +
+          "/students/" +
+          studentID
+      )
+      .then(() => {});
+  }
+
+  function deleteContact(id) {
     axios.delete("http://localhost:8080/contact/delete/" + id).then(() => {
       toast({
         title: "Contact Delete",
@@ -323,22 +334,31 @@ export default function Index() {
   }
 
   function removeContactFromStudent(student) {
-    axios.get("http://localhost:8080/contact/view/student/"+student.id).then((response) => {
-      axios.put("http://localhost:8080/student/deleteContact/"+response.data.id+"/students/"+student.id).then(() => {
-        toast({
-          title: "Contact Remove",
-          description: "Contact removed successfully",
-          position: "top",
-          status: "success",
-          duration: 5000,
-          isClosable: false,
-        });
-        deleteContact(response.data.id);
-        axios.get("http://localhost:8080/contact/view").then((response) => {
-          setContacts(response.data);
-        });
-        onEditClose();
-      });
+    axios
+      .get("http://localhost:8080/contact/view/student/" + student.id)
+      .then((response) => {
+        axios
+          .put(
+            "http://localhost:8080/student/deleteContact/" +
+              response.data.id +
+              "/students/" +
+              student.id
+          )
+          .then(() => {
+            toast({
+              title: "Contact Remove",
+              description: "Contact removed successfully",
+              position: "top",
+              status: "success",
+              duration: 5000,
+              isClosable: false,
+            });
+            deleteContact(response.data.id);
+            axios.get("http://localhost:8080/contact/view").then((response) => {
+              setContacts(response.data);
+            });
+            onEditClose();
+          });
       });
   }
 
@@ -532,16 +552,16 @@ export default function Index() {
                     />
                   </FormControl>
                   <Button
-                  bg={"red.500"}
-                  color={"black"}
-                  shadow="2xl"
-                  _hover={{
-                    bg: "red.700",
-                  }}
-                  onClick={()=>removeContactFromStudent(estuds)}
-                >
-                  Remove Contact Details
-                </Button>
+                    bg={"red.500"}
+                    color={"black"}
+                    shadow="2xl"
+                    _hover={{
+                      bg: "red.700",
+                    }}
+                    onClick={() => removeContactFromStudent(estuds)}
+                  >
+                    Remove Contact Details
+                  </Button>
                 </Stack>
               </ModalBody>
               <ModalFooter>
@@ -919,7 +939,7 @@ export default function Index() {
                   _hover={{
                     bg: "blue.500",
                   }}
-                  onClick={()=>addContact()}
+                  onClick={() => addContact()}
                 >
                   Add
                 </Button>
@@ -1021,363 +1041,373 @@ export default function Index() {
       </Center>
 
       <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.500">
-      <Tabs w="full" px="200">
-        <TabList>
-          <Tab>Students</Tab>
-          <Tab>Instructors</Tab>
-          <Tab>Subjects</Tab>
-          <Tab>Contacts</Tab>
-        </TabList>
-        <Stack
-          spacing={4}
-          w={"full"}
-          p={6}
-          my={12}
-          display="inline-block"
-        >
-          <TabPanels>
-          <TabPanel w="full">
-          <Grid templateColumns="repeat(4,1fr)" gap={4} paddingBottom="20px">
-          {students.map((student) => (
-            <Box
-              maxW={"320px"}
-              w={"full"}
-              bg="gray.300"
-              boxShadow={"2xl"}
-              rounded={"lg"}
-              p={6}
-              textAlign={"center"}
-              display="inline-block"
-              key={student.id}
-            >
-              <Avatar
-                size={"xl"}
-                alt={"Avatar Alt"}
-                mb={4}
-                pos={"relative"}
-                _after={{
-                  content: '""',
-                  w: 4,
-                  h: 4,
-                  bg: "green.300",
-                  border: "2px solid white",
-                  rounded: "full",
-                  pos: "absolute",
-                  bottom: 0,
-                  right: 3,
-                }}
-              />
-              <Heading fontSize={"2xl"} fontFamily={"body"}>
-                {student.firstName} {student.lastName}
-              </Heading>
-              <Text fontWeight={600} color={"gray.500"} mb={4}>
-                {student.course}-{student.year}
-              </Text>
-              <Text textAlign={"center"} px={3}>
-                Email: {student.email}
-              </Text>
-
-              <Stack mt={8} direction={"row"} spacing={4}>
-                <Button
-                  flex={1}
-                  fontSize={"sm"}
-                  rounded={"full"}
-                  _focus={{
-                    bg: "gray.200",
-                  }}
-                  onClick={() => {
-                    editStudent(student);
-                  }}
+        <Tabs w="full" px="200">
+          <TabList>
+            <Tab>Students</Tab>
+            <Tab>Instructors</Tab>
+            <Tab>Subjects</Tab>
+            <Tab>Contacts</Tab>
+          </TabList>
+          <Stack spacing={4} w={"full"} p={6} my={12} display="inline-block">
+            <TabPanels>
+              <TabPanel w="full">
+                <Grid
+                  templateColumns="repeat(4,1fr)"
+                  gap={4}
+                  paddingBottom="20px"
                 >
-                  Edit Info
-                </Button>
+                  {students.map((student) => (
+                    <Box
+                      maxW={"320px"}
+                      w={"full"}
+                      bg="gray.300"
+                      boxShadow={"2xl"}
+                      rounded={"lg"}
+                      p={6}
+                      textAlign={"center"}
+                      display="inline-block"
+                      key={student.id}
+                    >
+                      <Avatar
+                        size={"xl"}
+                        alt={"Avatar Alt"}
+                        mb={4}
+                        pos={"relative"}
+                        _after={{
+                          content: '""',
+                          w: 4,
+                          h: 4,
+                          bg: "green.300",
+                          border: "2px solid white",
+                          rounded: "full",
+                          pos: "absolute",
+                          bottom: 0,
+                          right: 3,
+                        }}
+                      />
+                      <Heading fontSize={"2xl"} fontFamily={"body"}>
+                        {student.firstName} {student.lastName}
+                      </Heading>
+                      <Text fontWeight={600} color={"gray.500"} mb={4}>
+                        {student.course}-{student.year}
+                      </Text>
+                      <Text textAlign={"center"} px={3}>
+                        Email: {student.email}
+                      </Text>
 
-                <Button
-                  flex={1}
-                  fontSize={"sm"}
-                  rounded={"full"}
-                  bg={"blue.400"}
-                  color={"white"}
-                  boxShadow={
-                    "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
-                  }
-                  _hover={{
-                    bg: "blue.500",
-                  }}
-                  _focus={{
-                    bg: "blue.500",
-                  }}
-                  onClick={() => {
-                    deleteStudent(student.id);
-                  }}
+                      <Stack mt={8} direction={"row"} spacing={4}>
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          _focus={{
+                            bg: "gray.200",
+                          }}
+                          onClick={() => {
+                            editStudent(student);
+                          }}
+                        >
+                          Edit Info
+                        </Button>
+
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          bg={"blue.400"}
+                          color={"white"}
+                          boxShadow={
+                            "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                          }
+                          _hover={{
+                            bg: "blue.500",
+                          }}
+                          _focus={{
+                            bg: "blue.500",
+                          }}
+                          onClick={() => {
+                            deleteStudent(student.id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+
+                      <Stack mt={8} direction={"row"} spacing={4}>
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          bg={"blue.400"}
+                          color={"white"}
+                          boxShadow={
+                            "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                          }
+                          _hover={{
+                            bg: "blue.500",
+                          }}
+                          _focus={{
+                            bg: "blue.500",
+                          }}
+                          onClick={() => subjectOpen(student.id)}
+                        >
+                          Add subjects
+                        </Button>
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          bg={"blue.400"}
+                          color={"white"}
+                          boxShadow={
+                            "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                          }
+                          _hover={{
+                            bg: "blue.500",
+                          }}
+                          _focus={{
+                            bg: "blue.500",
+                          }}
+                          onClick={() => viewStudentsFromSubject(student.id)}
+                        >
+                          View Subjects
+                        </Button>
+                      </Stack>
+                    </Box>
+                  ))}
+                </Grid>
+              </TabPanel>
+              <TabPanel>
+                <Grid
+                  templateColumns="repeat(4,1fr)"
+                  gap={4}
+                  paddingBottom="20px"
                 >
-                  Delete
-                </Button>
-              </Stack>
+                  {instructors.map((instructor) => (
+                    <Box
+                      maxW={"320px"}
+                      w={"full"}
+                      bg="gray.300"
+                      boxShadow={"2xl"}
+                      rounded={"lg"}
+                      p={6}
+                      textAlign={"center"}
+                      display="inline-block"
+                      key={instructor.id}
+                    >
+                      <Avatar
+                        size={"xl"}
+                        alt={"Avatar Alt"}
+                        mb={4}
+                        pos={"relative"}
+                        _after={{
+                          content: '""',
+                          w: 4,
+                          h: 4,
+                          bg: "green.300",
+                          border: "2px solid white",
+                          rounded: "full",
+                          pos: "absolute",
+                          bottom: 0,
+                          right: 3,
+                        }}
+                      />
+                      <Heading fontSize={"2xl"} fontFamily={"body"}>
+                        {instructor.firstName} {instructor.lastName}
+                      </Heading>
+                      <Text textAlign={"center"} px={3}>
+                        Email: {instructor.email}
+                      </Text>
 
-              <Stack mt={8} direction={"row"} spacing={4}>
-                <Button
-                  flex={1}
-                  fontSize={"sm"}
-                  rounded={"full"}
-                  bg={"blue.400"}
-                  color={"white"}
-                  boxShadow={
-                    "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
-                  }
-                  _hover={{
-                    bg: "blue.500",
-                  }}
-                  _focus={{
-                    bg: "blue.500",
-                  }}
-                  onClick={() => subjectOpen(student.id)}
+                      <Stack mt={8} direction={"row"} spacing={4}>
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          _focus={{
+                            bg: "gray.200",
+                          }}
+                        >
+                          Edit Info
+                        </Button>
+
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          bg={"blue.400"}
+                          color={"white"}
+                          boxShadow={
+                            "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                          }
+                          _hover={{
+                            bg: "blue.500",
+                          }}
+                          _focus={{
+                            bg: "blue.500",
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+                    </Box>
+                  ))}
+                </Grid>
+              </TabPanel>
+              <TabPanel>
+                <Grid
+                  templateColumns="repeat(4,1fr)"
+                  gap={4}
+                  paddingBottom="20px"
                 >
-                  Add subjects
-                </Button>
-                <Button
-                  flex={1}
-                  fontSize={"sm"}
-                  rounded={"full"}
-                  bg={"blue.400"}
-                  color={"white"}
-                  boxShadow={
-                    "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
-                  }
-                  _hover={{
-                    bg: "blue.500",
-                  }}
-                  _focus={{
-                    bg: "blue.500",
-                  }}
-                  onClick={() => viewStudentsFromSubject(student.id)}
+                  {subjects.map((subject) => (
+                    <Box
+                      maxW={"320px"}
+                      w={"full"}
+                      bg="gray.300"
+                      boxShadow={"2xl"}
+                      rounded={"lg"}
+                      p={6}
+                      textAlign={"center"}
+                      display="inline-block"
+                      key={subject.subject_id}
+                    >
+                      <Avatar
+                        size={"xl"}
+                        alt={"Avatar Alt"}
+                        mb={4}
+                        pos={"relative"}
+                        _after={{
+                          content: '""',
+                          w: 4,
+                          h: 4,
+                          bg: "green.300",
+                          border: "2px solid white",
+                          rounded: "full",
+                          pos: "absolute",
+                          bottom: 0,
+                          right: 3,
+                        }}
+                      />
+                      <Heading fontSize={"2xl"} fontFamily={"body"}>
+                        {subject.name}
+                      </Heading>
+
+                      <Stack mt={8} direction={"row"} spacing={4}>
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          _focus={{
+                            bg: "gray.200",
+                          }}
+                        >
+                          Edit Info
+                        </Button>
+
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          bg={"blue.400"}
+                          color={"white"}
+                          boxShadow={
+                            "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                          }
+                          _hover={{
+                            bg: "blue.500",
+                          }}
+                          _focus={{
+                            bg: "blue.500",
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+                    </Box>
+                  ))}
+                </Grid>
+              </TabPanel>
+              <TabPanel>
+                <Grid
+                  templateColumns="repeat(4,1fr)"
+                  gap={4}
+                  paddingBottom="20px"
                 >
-                  View Subjects
-                </Button>
-              </Stack>
-            </Box>
-          ))}
-          </Grid>
-          </TabPanel>
-          <TabPanel>
-          <Grid templateColumns="repeat(4,1fr)" gap={4} paddingBottom="20px">
-            {instructors.map((instructor) => (
-              <Box
-                maxW={"320px"}
-                w={"full"}
-                bg="gray.300"
-                boxShadow={"2xl"}
-                rounded={"lg"}
-                p={6}
-                textAlign={"center"}
-                display="inline-block"
-                key={instructor.id}
-              >
-                <Avatar
-                  size={"xl"}
-                  alt={"Avatar Alt"}
-                  mb={4}
-                  pos={"relative"}
-                  _after={{
-                    content: '""',
-                    w: 4,
-                    h: 4,
-                    bg: "green.300",
-                    border: "2px solid white",
-                    rounded: "full",
-                    pos: "absolute",
-                    bottom: 0,
-                    right: 3,
-                  }}
-                />
-                <Heading fontSize={"2xl"} fontFamily={"body"}>
-                  {instructor.firstName} {instructor.lastName}
-                </Heading>
-                <Text textAlign={"center"} px={3}>
-                  Email: {instructor.email}
-                </Text>
+                  {contacts.map((contact) => (
+                    <Box
+                      maxW={"320px"}
+                      w={"full"}
+                      bg="gray.300"
+                      boxShadow={"2xl"}
+                      rounded={"lg"}
+                      p={6}
+                      textAlign={"center"}
+                      display="inline-block"
+                      key={contact.id}
+                    >
+                      <Avatar
+                        size={"xl"}
+                        alt={"Avatar Alt"}
+                        mb={4}
+                        pos={"relative"}
+                        _after={{
+                          content: '""',
+                          w: 4,
+                          h: 4,
+                          bg: "green.300",
+                          border: "2px solid white",
+                          rounded: "full",
+                          pos: "absolute",
+                          bottom: 0,
+                          right: 3,
+                        }}
+                      />
+                      <Heading fontSize={"2xl"} fontFamily={"body"}>
+                        {contact.firstname} {contact.lastName}
+                      </Heading>
+                      <Text textAlign={"center"} px={3}>
+                        Number: {contact.number}
+                      </Text>
 
-                <Stack mt={8} direction={"row"} spacing={4}>
-                  <Button
-                    flex={1}
-                    fontSize={"sm"}
-                    rounded={"full"}
-                    _focus={{
-                      bg: "gray.200",
-                    }}
-                  >
-                    Edit Info
-                  </Button>
+                      <Stack mt={8} direction={"row"} spacing={4}>
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          _focus={{
+                            bg: "gray.200",
+                          }}
+                        >
+                          Edit Info
+                        </Button>
 
-                  <Button
-                    flex={1}
-                    fontSize={"sm"}
-                    rounded={"full"}
-                    bg={"blue.400"}
-                    color={"white"}
-                    boxShadow={
-                      "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
-                    }
-                    _hover={{
-                      bg: "blue.500",
-                    }}
-                    _focus={{
-                      bg: "blue.500",
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Stack>
-              </Box>
-            ))}
-            </Grid>
-          </TabPanel>
-          <TabPanel>
-          <Grid templateColumns="repeat(4,1fr)" gap={4} paddingBottom="20px">
-            {subjects.map((subject) => (
-              <Box
-                maxW={"320px"}
-                w={"full"}
-                bg="gray.300"
-                boxShadow={"2xl"}
-                rounded={"lg"}
-                p={6}
-                textAlign={"center"}
-                display="inline-block"
-                key={subject.subject_id}
-              >
-                <Avatar
-                  size={"xl"}
-                  alt={"Avatar Alt"}
-                  mb={4}
-                  pos={"relative"}
-                  _after={{
-                    content: '""',
-                    w: 4,
-                    h: 4,
-                    bg: "green.300",
-                    border: "2px solid white",
-                    rounded: "full",
-                    pos: "absolute",
-                    bottom: 0,
-                    right: 3,
-                  }}
-                />
-                <Heading fontSize={"2xl"} fontFamily={"body"}>
-                  {subject.name}
-                </Heading>
-
-                <Stack mt={8} direction={"row"} spacing={4}>
-                  <Button
-                    flex={1}
-                    fontSize={"sm"}
-                    rounded={"full"}
-                    _focus={{
-                      bg: "gray.200",
-                    }}
-                  >
-                    Edit Info
-                  </Button>
-
-                  <Button
-                    flex={1}
-                    fontSize={"sm"}
-                    rounded={"full"}
-                    bg={"blue.400"}
-                    color={"white"}
-                    boxShadow={
-                      "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
-                    }
-                    _hover={{
-                      bg: "blue.500",
-                    }}
-                    _focus={{
-                      bg: "blue.500",
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Stack>
-              </Box>
-            ))}
-            </Grid>
-          </TabPanel>
-          <TabPanel>
-          <Grid templateColumns="repeat(4,1fr)" gap={4} paddingBottom="20px">
-            {contacts.map((contact) => (
-              <Box
-                maxW={"320px"}
-                w={"full"}
-                bg="gray.300"
-                boxShadow={"2xl"}
-                rounded={"lg"}
-                p={6}
-                textAlign={"center"}
-                display="inline-block"
-                key={contact.id}
-              >
-                <Avatar
-                  size={"xl"}
-                  alt={"Avatar Alt"}
-                  mb={4}
-                  pos={"relative"}
-                  _after={{
-                    content: '""',
-                    w: 4,
-                    h: 4,
-                    bg: "green.300",
-                    border: "2px solid white",
-                    rounded: "full",
-                    pos: "absolute",
-                    bottom: 0,
-                    right: 3,
-                  }}
-                />
-                <Heading fontSize={"2xl"} fontFamily={"body"}>
-                  {contact.firstname} {contact.lastName}
-                </Heading>
-                <Text textAlign={"center"} px={3}>
-                  Number: {contact.number}
-                </Text>
-
-                <Stack mt={8} direction={"row"} spacing={4}>
-                  <Button
-                    flex={1}
-                    fontSize={"sm"}
-                    rounded={"full"}
-                    _focus={{
-                      bg: "gray.200",
-                    }}
-                  >
-                    Edit Info
-                  </Button>
-
-                  <Button
-                    flex={1}
-                    fontSize={"sm"}
-                    rounded={"full"}
-                    bg={"blue.400"}
-                    color={"white"}
-                    boxShadow={
-                      "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
-                    }
-                    _hover={{
-                      bg: "blue.500",
-                    }}
-                    _focus={{
-                      bg: "blue.500",
-                    }}
-                    onClick={()=>deleteContact(contact.id)}
-                  >
-                    Delete
-                  </Button>
-                </Stack>
-              </Box>
-            ))}
-            </Grid>
-          </TabPanel>
-        </TabPanels>
-        </Stack>
+                        <Button
+                          flex={1}
+                          fontSize={"sm"}
+                          rounded={"full"}
+                          bg={"blue.400"}
+                          color={"white"}
+                          boxShadow={
+                            "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                          }
+                          _hover={{
+                            bg: "blue.500",
+                          }}
+                          _focus={{
+                            bg: "blue.500",
+                          }}
+                          onClick={() => deleteContact(contact.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+                    </Box>
+                  ))}
+                </Grid>
+              </TabPanel>
+            </TabPanels>
+          </Stack>
         </Tabs>
       </Flex>
     </Box>

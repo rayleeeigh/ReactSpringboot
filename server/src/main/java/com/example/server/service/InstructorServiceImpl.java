@@ -1,9 +1,7 @@
 package com.example.server.service;
 
-import com.example.server.model.Contact;
 import com.example.server.model.Instructor;
 import com.example.server.model.Student;
-import com.example.server.repository.ContactRepository;
 import com.example.server.repository.InstructorRepository;
 import com.example.server.repository.StudentRepository;
 import lombok.AllArgsConstructor;
@@ -23,8 +21,6 @@ public class InstructorServiceImpl implements InstructorService{
     @Autowired
     private StudentRepository studentRepository;
 
-    @Autowired
-    private ContactRepository contactRepository;
 
     @Override
     public Instructor saveInstructor(Instructor instructor) {
