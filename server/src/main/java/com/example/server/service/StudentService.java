@@ -30,5 +30,12 @@ public interface StudentService {
     //this function will remove a contact from a student//
     public String removeContactFromStudent(Integer contactID, Integer studentID);
 
+    //USING ENTITY MANAGER
+    public List<Student> getAllStudentByEntityManager( );
 
+    //CRITERIA API QUERY
+    public Student getAllStudentUsingCriteria(Integer studentID);
+
+    //DERIVED QUERY METHOD
+    public List<Student> findStudentByName(String name );
 }

@@ -90,4 +90,19 @@ public class StudentController {
     public String deleteContactFromStudent(@PathVariable int contactID, @PathVariable int studentID){
         return studentService.removeContactFromStudent(contactID,studentID);
     }
+
+    @GetMapping("/getThem")
+    public List<Student> getAllStudentThem(){
+        return studentService.getAllStudentByEntityManager();
+    }
+
+    @GetMapping("/getThem2/{studentID}")
+    public Student getTheStudent(@PathVariable int studentID){
+        return studentService.getAllStudentUsingCriteria(studentID);
+    }
+
+    @GetMapping("/findByName/{name}")
+    public List<Student> findTheStudent(@PathVariable String name){
+        return studentService.findStudentByName(name);
+    }
 }

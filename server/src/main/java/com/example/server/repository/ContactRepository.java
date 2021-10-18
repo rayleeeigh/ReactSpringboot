@@ -8,6 +8,7 @@ import com.example.server.model.Contact;
 
 @Repository
 public interface ContactRepository extends JpaRepository<Contact,Integer> {
+
     @Query(value = "SELECT * FROM Contact s WHERE s.student_id=:studentId", nativeQuery = true)
     Contact getStudentContact(int studentId);
 

@@ -11,6 +11,12 @@ import com.example.server.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +33,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
+    @Autowired
+    private EntityManagerFactory emf;
 
     private boolean Contactflag;
 
@@ -175,5 +184,29 @@ public class StudentServiceImpl implements StudentService {
         contactRepository.save(contact);
 
         return "Success";
+    }
+
+    @Override
+    public List<Student> getAllStudentByEntityManager( ){
+        EntityManager entityManager = emf.createEntityManager();
+        String queryString = "SELECT u FROM Student u";
+        Query query = entityManager.createQuery(queryString);
+        List<Student> students = query.getResultList();
+        return students;
+    }
+
+    @Override
+    public Student getAllStudentUsingCriteria(Integer studentID){
+        EntityManager entityManager = emf.createEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Student> criteriaQuery = criteriaBuilder.createQuery(Student.class);
+        Root<Student> studentRoot = criteriaQuery.from(Student.class);
+        Student studentResult = entityManager.createQuery(criteriaQuery.select(studentRoot).where(criteriaBuilder.equal(studentRoot.get("id"),studentID))).getSingleResult();
+        return studentResult;
+    }
+
+    @Override
+    public List<Student> findStudentByName(String name ){
+        return studentRepository.findByFirstName(name);
     }
 }
