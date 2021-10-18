@@ -6,12 +6,15 @@ import com.example.server.model.Student;
 import com.example.server.repository.ContactRepository;
 import com.example.server.repository.InstructorRepository;
 import com.example.server.repository.StudentRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Service
 public class InstructorServiceImpl implements InstructorService{
     @Autowired
@@ -76,4 +79,5 @@ public class InstructorServiceImpl implements InstructorService{
         instructorRepository.save(instructor);
         return "Success";
     }
+
 }
