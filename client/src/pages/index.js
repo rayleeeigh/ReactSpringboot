@@ -1054,12 +1054,12 @@ export default function Index() {
       </Center>
 
       <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.500">
-      <Tabs w="full" px="200">
+      <Tabs w="full" px="200" isFitted variant="enclosed">
         <TabList>
-          <Tab>Students</Tab>
-          <Tab>Instructors</Tab>
-          <Tab>Subjects</Tab>
-          <Tab>Contacts</Tab>
+          <Tab _selected={{ bg: "gray.200" }}>Students</Tab>
+          <Tab _selected={{ bg: "gray.200" }}>Instructors</Tab>
+          <Tab _selected={{ bg: "gray.200" }}>Subjects</Tab>
+          <Tab _selected={{ bg: "gray.200" }}>Contacts</Tab>
         </TabList>
         <Stack
           spacing={4}
@@ -1173,7 +1173,7 @@ export default function Index() {
                   fontSize={"sm"}
                   rounded={"full"}
                   bg={"green.400"}
-                  color={"black"}
+                  color={"white"}
                   boxShadow={
                     "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
                   }
