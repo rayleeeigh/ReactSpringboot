@@ -43,9 +43,9 @@ public class InstructorController {
     }
 
     //this function will assign a newly created student to an instructor.//
-    @PutMapping("/assignInstructor/{instructorId}/assignContact/{contactId}")
-    public Instructor assignStudentsToInstructor(@PathVariable Integer instructorId,@PathVariable Integer contactId, @RequestBody Student student){
-        return instructorService.assignCreatedStudent(instructorId,contactId,student);
+    @PutMapping("/assignInstructor/{instructorId}")
+    public Instructor assignStudentsToInstructor(@PathVariable Integer instructorId, @RequestBody Student student){
+        return instructorService.assignCreatedStudent(instructorId,student);
     }
 
     //this function will remove the assigned instructor from the student//
