@@ -22,6 +22,11 @@ import {
   Center,
   Spacer,
   Grid,
+  Tabs, 
+  TabList, 
+  Tab, 
+  TabPanel,
+  TabPanels
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -49,7 +54,7 @@ export default function Index() {
   const [students, setStudents] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [subjects, setSubjects] = useState([]);
-  const [instructor, setInstructor] = useState(null);
+  const [instructorid, setInstructorID] = useState(null);
   const [estuds, setEStuds] = useState({
     id: "",
     first_name: "",
@@ -65,6 +70,7 @@ export default function Index() {
   const [contactLastname, setContactLastname] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [contacts, setContacts] = useState([]);
+  const [contact, setContact] = useState({});
 
   //Subject
   const [subjectname, setSubjectName] = useState("");
@@ -89,12 +95,13 @@ export default function Index() {
       course: course,
       year: year,
       instructor_id: null,
+      contact_id: null
     };
+    const cid=contact.id;
 
     axios
       .put(
-        "http://localhost:8080/instructor/assignInstructor/" + instructor,
-        student
+        "http://localhost:8080/instructor/assignInstructor/"+instructorid+"/assignContact/"+ cid, student
       )
       .then(() => {
         toast({
@@ -275,14 +282,14 @@ export default function Index() {
   //Contact CRUD
   const addContact = (e) => {
     e.preventDefault();
-    const contactt = {
+    const contactt={
       firstname: contactFirstname,
       lastName: contactLastname,
       number: contactNumber,
       address: contactAddress,
-    };
+    }
 
-    axios.post("http://localhost:8080/contact/add", contactt).then(() => {
+    axios.post("http://localhost:8080/contact/add", contactt).then((response) => {
       toast({
         title: "Contact Add",
         description: "Added Contact Successfully!",
@@ -290,11 +297,30 @@ export default function Index() {
         status: "success",
         duration: "5000",
         isClosable: "false",
+      }
+      );
+      setContact(response.data);
+      axios.get("http://localhost:8080/contact/view").then((response) => {
+        setContacts(response.data);
       });
-      // axios.get("http://localhost:8080/contact/view").then((response) => {
-      //   setSubjects(response.data);
-      // });
-      onAddSubjectClose();
+      onContactClose();
+    });
+  };
+
+  const deleteContact = (id) => {
+    axios.delete("http://localhost:8080/contact/delete/" + id).then(() => {
+      toast({
+        title: "Contact Delete",
+        description: "Contact deleted successfully",
+        position: "top",
+        status: "success",
+        duration: 5000,
+        isClosable: false,
+      });
+      axios.get("http://localhost:8080/contact/view").then((response) => {
+        setContacts(response.data);
+      });
+      onClose();
     });
   };
 
@@ -575,9 +601,10 @@ export default function Index() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </FormControl>
+                  <Text fontSize={{ base: "sm", sm: "md" }}>Instructor</Text>
                   <Select
                     placeholder="Select Instructor"
-                    onChange={(e) => setInstructor(e.target.value)}
+                    onChange={(e) => setInstructorID(e.target.value)}
                   >
                     {instructors.map((instructor) => (
                       <option key={instructor.id} value={instructor.id}>
@@ -585,6 +612,17 @@ export default function Index() {
                       </option>
                     ))}
                   </Select>
+                  <Text fontSize={{ base: "sm", sm: "md" }}>Contact Details</Text>
+                  <Button
+                  bg={"green.400"}
+                  color={"white"}
+                  _hover={{
+                    bg: "blue.500",
+                  }}
+                  onClick={onContactOpen}
+                >
+                  Click here to add contact details
+                </Button>
                 </Stack>
               </ModalBody>
 
@@ -843,7 +881,7 @@ export default function Index() {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={onAddSubjectClose}>
+                <Button colorScheme="blue" mr={3} onClick={onContactClose}>
                   Close
                 </Button>
                 <Button
@@ -899,7 +937,7 @@ export default function Index() {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={onAddSubjectClose}>
+                <Button colorScheme="blue" mr={3} onClick={onViewSubjectClose}>
                   Close
                 </Button>
                 <Button
@@ -954,18 +992,22 @@ export default function Index() {
       </Center>
 
       <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.500">
+      <Tabs w="full" px="200">
+        <TabList>
+          <Tab>Students</Tab>
+          <Tab>Instructors</Tab>
+          <Tab>Subjects</Tab>
+          <Tab>Contacts</Tab>
+        </TabList>
         <Stack
           spacing={4}
           w={"full"}
-          maxW={"80%"}
-          bg="gray.300"
-          rounded={"xl"}
-          boxShadow={"lg"}
           p={6}
           my={12}
           display="inline-block"
         >
-          <Heading>Students</Heading>
+          <TabPanels>
+          <TabPanel w="full">
           {students.map((student) => (
             <Box
               maxW={"320px"}
@@ -1085,8 +1127,8 @@ export default function Index() {
               </Stack>
             </Box>
           ))}
-          <Heading>Instructors</Heading>
-          <Stack spacing={4} w={"full"} maxW={"80%"} display="inline-block">
+          </TabPanel>
+          <TabPanel>
             {instructors.map((instructor) => (
               <Box
                 maxW={"320px"}
@@ -1156,9 +1198,8 @@ export default function Index() {
                 </Stack>
               </Box>
             ))}
-          </Stack>
-          <Heading>Subjects</Heading>
-          <Stack spacing={4} w={"full"} maxW={"80%"} display="inline-block">
+          </TabPanel>
+          <TabPanel>
             {subjects.map((subject) => (
               <Box
                 maxW={"320px"}
@@ -1225,9 +1266,8 @@ export default function Index() {
                 </Stack>
               </Box>
             ))}
-          </Stack>
-          <Heading>Contacts</Heading>
-          <Stack spacing={4} w={"full"} maxW={"80%"} display="inline-block">
+          </TabPanel>
+          <TabPanel>
             {contacts.map((contact) => (
               <Box
                 maxW={"320px"}
@@ -1291,14 +1331,17 @@ export default function Index() {
                     _focus={{
                       bg: "blue.500",
                     }}
+                    onClick={()=>deleteContact(contact.id)}
                   >
                     Delete
                   </Button>
                 </Stack>
               </Box>
             ))}
-          </Stack>
+          </TabPanel>
+        </TabPanels>
         </Stack>
+        </Tabs>
       </Flex>
     </Box>
   );
