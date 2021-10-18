@@ -60,12 +60,9 @@ public class InstructorServiceImpl implements InstructorService{
     }
 
     @Override
-    public Instructor assignCreatedStudent(Integer id,Integer contactId, Student student){
+    public Instructor assignCreatedStudent(Integer id, Student student){
         Instructor instructor=instructorRepository.findById(id).get();
-        Contact contact = contactRepository.findById(contactId).get();
         instructor.getStudents().add(student);
-        student.setContact(contact);
-        contact.setStudentId(student.getId());
         instructorRepository.save(instructor);
         return instructor;
     }
